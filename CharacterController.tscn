@@ -1,0 +1,337 @@
+[gd_scene load_steps=8 format=3 uid="uid://dd1thh4346sxi"]
+
+[ext_resource type="Script" uid="uid://7y87kc0aoch8" path="res://Scripts/SpiderController.gd" id="1_wubm4"]
+[ext_resource type="Script" uid="uid://s6d7nnkioe3o" path="res://GrappleLine.gd" id="2_v6m8r"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_l0jw5"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_quavu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6h2m2"]
+albedo_color = Color(1, 0.885502, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_i6jhg"]
+material = SubResource("StandardMaterial3D_6h2m2")
+top_radius = 0.1
+bottom_radius = 0.3
+height = 0.1
+
+[sub_resource type="Curve3D" id="Curve3D_bouwt"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, -2),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder")]
+script = ExtResource("1_wubm4")
+speed = 10.0
+runSpeed = 20.0
+head = NodePath("Head")
+camera = NodePath("Head/Camera3D")
+camTarget = NodePath("Head/Camera3D/CamTarget")
+rayFolder = NodePath("RayFolder")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_l0jw5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_quavu")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 7.91265e-08, 3.71717e-08, 0, 0.425195, -0.905102, -8.74228e-08, -0.905102, -0.425195, 0, 0.708, -0.455)
+mesh = SubResource("CylinderMesh_i6jhg")
+
+[node name="Head" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.674992, -0.514291)
+
+[node name="CamTarget" type="Marker3D" parent="Head/Camera3D"]
+
+[node name="RayFolder" type="Node3D" parent="."]
+
+[node name="DOWN" type="RayCast3D" parent="RayFolder"]
+target_position = Vector3(0, -1.5, 0)
+
+[node name="UP" type="RayCast3D" parent="RayFolder"]
+target_position = Vector3(0, 1, 0)
+
+[node name="RayCast3D" type="RayCast3D" parent="RayFolder"]
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D2" type="RayCast3D" parent="RayFolder"]
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D3" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D4" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D5" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D6" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D7" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, -0.5, 0.866025, 0, -0.866025, -0.5, 0, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D8" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, -0.5, 0.866025, 0, -0.866025, -0.5, 0, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D9" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, -0.866025, 0.5, 0, -0.5, -0.866025, 0, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D10" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, -0.866025, 0.5, 0, -0.5, -0.866025, 0, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D11" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D12" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D13" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.25, -0.433013, 0, 0.866025, 0.5, 0.5, -0.433013, 0.75, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D14" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.25, -0.433013, 0, 0.866025, 0.5, 0.5, -0.433013, 0.75, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D15" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D16" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D17" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.433013, 0.25, 0, -0.5, 0.866025, 0.5, -0.75, -0.433013, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D18" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.433013, 0.25, 0, -0.5, 0.866025, 0.5, -0.75, -0.433013, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D19" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.25, 0.433013, 0, -0.866025, 0.5, 0.5, -0.433013, -0.75, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D20" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.866025, 0.25, 0.433013, 0, -0.866025, 0.5, 0.5, -0.433013, -0.75, -5.96046e-08, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D21" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D22" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D23" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.433013, -0.75, 0, 0.866025, 0.5, 0.866025, -0.25, 0.433013, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D24" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.433013, -0.75, 0, 0.866025, 0.5, 0.866025, -0.25, 0.433013, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D25" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.75, -0.433013, 0, 0.5, 0.866025, 0.866025, -0.433013, 0.25, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D26" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.75, -0.433013, 0, 0.5, 0.866025, 0.866025, -0.433013, 0.25, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D27" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.75, 0.433013, 0, -0.5, 0.866025, 0.866025, -0.433013, -0.25, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D28" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.75, 0.433013, 0, -0.5, 0.866025, 0.866025, -0.433013, -0.25, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D29" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.433013, 0.75, 0, -0.866025, 0.5, 0.866025, -0.25, -0.433013, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D30" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0.5, 0.433013, 0.75, 0, -0.866025, 0.5, 0.866025, -0.25, -0.433013, -1.19209e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D31" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D32" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D33" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.5, -0.866025, 0, 0.866025, 0.5, 1, 1.49012e-08, -2.98023e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D34" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.5, -0.866025, 0, 0.866025, 0.5, 1, 1.49012e-08, -2.98023e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D35" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.866025, -0.5, 0, 0.5, 0.866025, 1, 2.98023e-08, -1.49012e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D36" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.866025, -0.5, 0, 0.5, 0.866025, 1, 2.98023e-08, -1.49012e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D37" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.866025, 0.5, 0, -0.5, 0.866025, 1, 2.98023e-08, 1.49012e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D38" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.866025, 0.5, 0, -0.5, 0.866025, 1, 2.98023e-08, 1.49012e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D39" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.5, 0.866025, 0, -0.866025, 0.5, 1, 1.49012e-08, 2.98023e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D40" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(0, 0.5, 0.866025, 0, -0.866025, 0.5, 1, 1.49012e-08, 2.98023e-08, -1.78814e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D41" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D42" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D43" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.433013, -0.75, 0, 0.866025, 0.5, 0.866025, 0.25, -0.433013, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D44" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.433013, -0.75, 0, 0.866025, 0.5, 0.866025, 0.25, -0.433013, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D45" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.75, -0.433013, 0, 0.5, 0.866025, 0.866025, 0.433013, -0.25, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D46" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.75, -0.433013, 0, 0.5, 0.866025, 0.866025, 0.433013, -0.25, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D47" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.75, 0.433013, 0, -0.5, 0.866025, 0.866025, 0.433013, 0.25, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D48" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.75, 0.433013, 0, -0.5, 0.866025, 0.866025, 0.433013, 0.25, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D49" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.433013, 0.75, 0, -0.866025, 0.5, 0.866025, 0.25, 0.433013, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D50" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.5, 0.433013, 0.75, 0, -0.866025, 0.5, 0.866025, 0.25, 0.433013, -2.38419e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D51" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, -0.866025, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D52" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, -0.866025, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D53" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.25, -0.433013, 0, 0.866025, 0.5, 0.5, 0.433013, -0.75, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D54" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.25, -0.433013, 0, 0.866025, 0.5, 0.5, 0.433013, -0.75, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D55" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, 0.75, -0.433013, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D56" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, 0.75, -0.433013, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D57" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.433013, 0.25, 0, -0.5, 0.866025, 0.5, 0.75, 0.433013, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D58" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.433013, 0.25, 0, -0.5, 0.866025, 0.5, 0.75, 0.433013, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="RayCast3D59" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.25, 0.433013, 0, -0.866025, 0.5, 0.5, 0.433013, 0.75, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="RayCast3D60" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(-0.866025, 0.25, 0.433013, 0, -0.866025, 0.5, 0.5, 0.433013, 0.75, -2.98023e-07, 0, 0)
+target_position = Vector3(0, 0, 1)
+
+[node name="DOWN2" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0, 0)
+target_position = Vector3(0, -1.5, 0)
+
+[node name="DOWN3" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, 0)
+target_position = Vector3(0, -1.5, 0)
+
+[node name="DOWN4" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
+target_position = Vector3(0, -1.5, 0)
+
+[node name="DOWN5" type="RayCast3D" parent="RayFolder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+target_position = Vector3(0, -1.5, 0)
+
+[node name="GrappleLine" type="Node3D" parent="." node_paths=PackedStringArray("csgPolygon", "path")]
+visible = false
+script = ExtResource("2_v6m8r")
+csgPolygon = NodePath("CSGPolygon3D")
+path = NodePath("Path3D")
+lineRadius = 0.025
+lineResolution = 8
+
+[node name="Path3D" type="Path3D" parent="GrappleLine"]
+curve = SubResource("Curve3D_bouwt")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="GrappleLine"]
+polygon = PackedVector2Array(0, 0.025, 0.0176777, 0.0176777, 0.025, 1.53076e-18, 0.0176777, -0.0176777, 3.06152e-18, -0.025, -0.0176777, -0.0176777, -0.025, -4.59227e-18, -0.0176777, 0.0176777)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
