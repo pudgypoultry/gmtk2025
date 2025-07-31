@@ -1,0 +1,31 @@
+[gd_scene load_steps=8 format=3 uid="uid://dm7jkum4qeudl"]
+
+[ext_resource type="PackedScene" uid="uid://l35xtqu81ih" path="res://Scenes/test_setup.tscn" id="1_5ukr8"]
+[ext_resource type="Script" uid="uid://cpfo6q3mv3phv" path="res://Scenes/piller_control.gd" id="1_o06y3"]
+[ext_resource type="PackedScene" uid="uid://chqsiuqptnvwl" path="res://Assets/Icosphere_shell.glb" id="2_o06y3"]
+[ext_resource type="PackedScene" uid="uid://svjf1k8bhx3" path="res://Scenes/ico_layer_01.tscn" id="3_k7acu"]
+[ext_resource type="PackedScene" uid="uid://o1he5ion8kok" path="res://Scenes/ico_layer_02.tscn" id="4_5v1tr"]
+[ext_resource type="PackedScene" uid="uid://11mm2c37qj45" path="res://Scenes/ico_layer_03.tscn" id="5_0fj1v"]
+[ext_resource type="PackedScene" uid="uid://bju0nbj7k6ovq" path="res://Scenes/ico_layer_04.tscn" id="6_ikia7"]
+
+[node name="World" type="Node3D" node_paths=PackedStringArray("player_node", "piller_set_L1", "piller_set_L2", "piller_set_L3", "piller_set_L4")]
+script = ExtResource("1_o06y3")
+player_node = NodePath("TestSetup/CharacterBody3D2")
+piller_set_L1 = NodePath("Ico_Layer_01")
+piller_set_L2 = NodePath("Ico_Layer_02")
+piller_set_L3 = NodePath("Ico_Layer_03")
+piller_set_L4 = NodePath("Ico_Layer_04")
+
+[node name="TestSetup" parent="." instance=ExtResource("1_5ukr8")]
+
+[node name="Ico_Layer_01" parent="." instance=ExtResource("3_k7acu")]
+
+[node name="Ico_Layer_02" parent="." instance=ExtResource("4_5v1tr")]
+
+[node name="Ico_Layer_03" parent="." instance=ExtResource("5_0fj1v")]
+
+[node name="Ico_Layer_04" parent="." instance=ExtResource("6_ikia7")]
+
+[node name="Icosphere_shell" parent="." instance=ExtResource("2_o06y3")]
+
+[editable path="TestSetup"]

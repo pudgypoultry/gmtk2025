@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bju0nbj7k6ovq"]
+
+[ext_resource type="Script" uid="uid://h0tpuocyh30u" path="res://ico_layer_mover.gd" id="1_6mrht"]
+[ext_resource type="PackedScene" uid="uid://tmyd7seikrnx" path="res://Assets/Icosphere_layer4.glb" id="2_6mrht"]
+
+[node name="Ico_Layer_04" type="Node3D" node_paths=PackedStringArray("icosphere_layer")]
+script = ExtResource("1_6mrht")
+inactive_distance = 50.0
+icosphere_layer = NodePath("Icosphere_layer4")
+
+[node name="Icosphere_layer4" parent="." instance=ExtResource("2_6mrht")]

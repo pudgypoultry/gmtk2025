@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cdhr25cokb6pf"
+uid="uid://chqsiuqptnvwl"
 path="res://.godot/imported/Icosphere_shell.glb-9d6bf216dbcd13b5f5305f6ab5cefa93.scn"
 
 [deps]
@@ -33,5 +33,5 @@ animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={}
-gltf/naming_version=1
+gltf/naming_version=0
 gltf/embedded_image_handling=1
