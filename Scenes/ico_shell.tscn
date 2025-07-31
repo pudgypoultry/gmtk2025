@@ -1,13 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://drclv0roa88dj"]
+[gd_scene load_steps=2 format=3 uid="uid://drclv0roa88dj"]
 
 [ext_resource type="PackedScene" uid="uid://chqsiuqptnvwl" path="res://Assets/Icosphere_shell.glb" id="1_pfmqq"]
-[ext_resource type="Material" uid="uid://vx5hs2bek5e4" path="res://Materials/room_material_01.tres" id="2_k2tgw"]
 
 [node name="Ico_Shell" type="Node3D"]
 
 [node name="Icosphere_shell" parent="." instance=ExtResource("1_pfmqq")]
-
-[node name="ico-shell" parent="Icosphere_shell" index="0"]
-surface_material_override/0 = ExtResource("2_k2tgw")
-
-[editable path="Icosphere_shell"]

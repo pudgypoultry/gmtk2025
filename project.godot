@@ -82,6 +82,14 @@ Grapple={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_12="Shell"
+3d_physics/layer_13="Pillars1"
+3d_physics/layer_14="Pillars2"
+3d_physics/layer_15="Pillars3"
+3d_physics/layer_16="Pillars4"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

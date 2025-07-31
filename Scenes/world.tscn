@@ -22,13 +22,15 @@ background_mode = 2
 background_color = Color(0.427493, 0.427493, 0.427493, 1)
 sky = SubResource("Sky_k7acu")
 
-[node name="World" type="Node3D" node_paths=PackedStringArray("player_node", "pillar_set_L1", "pillar_set_L2", "pillar_set_L3", "pillar_set_L4")]
+[node name="World" type="Node3D" node_paths=PackedStringArray("player_node", "pillar_set_L1", "pillar_set_L2", "pillar_set_L3", "pillar_set_L4", "shell_node", "shell_detection_ray")]
 script = ExtResource("1_o06y3")
 player_node = NodePath("CharacterBody3D")
 pillar_set_L1 = NodePath("Ico_Layer_01")
 pillar_set_L2 = NodePath("Ico_Layer_02")
 pillar_set_L3 = NodePath("Ico_Layer_03")
 pillar_set_L4 = NodePath("Ico_Layer_04")
+shell_node = NodePath("Ico_Shell")
+shell_detection_ray = NodePath("CharacterBody3D/RayCast3D")
 
 [node name="Ico_Layer_01" parent="." instance=ExtResource("3_k7acu")]
 
@@ -43,6 +45,11 @@ rotationSpeed = 10.0
 verticalCameraClamp = 85.0
 speed = 400.0
 runSpeed = 600.0
+
+[node name="RayCast3D" type="RayCast3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.598501, -0.969988)
+target_position = Vector3(0, 0, -50)
+collision_mask = 63488
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 light_color = Color(0.808639, 0.819342, 0.872209, 1)
