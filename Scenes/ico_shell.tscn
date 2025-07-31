@@ -10,4 +10,8 @@
 [node name="ico-shell" parent="Icosphere_shell" index="0"]
 surface_material_override/0 = ExtResource("2_pfmqq")
 
+[node name="StaticBody3D" parent="Icosphere_shell/ico-shell" index="0"]
+collision_layer = 2049
+collision_mask = 2049
+
 [editable path="Icosphere_shell"]

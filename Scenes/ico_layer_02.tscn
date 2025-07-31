@@ -7,5 +7,6 @@
 script = ExtResource("1_ktamd")
 inactive_distance = 50.0
 icosphere_layer = NodePath("Icosphere_layer2")
+layer = 2
 
 [node name="Icosphere_layer2" parent="." instance=ExtResource("2_ktamd")]
