@@ -120,14 +120,14 @@ func get_dir() -> Vector3:
 	var dir : Vector3 = Vector3.ZERO
 	var fowardDir : Vector3 = ( camTarget.global_transform.origin - head.global_transform.origin  ).normalized()
 	var dirBase :Vector3= avgNormal.cross( fowardDir ).normalized()
-	var inputLeftRight = Input.get_axis("MoveLeft","MoveRight")
-	var inputForwardBack = Input.get_axis("MoveBackward","MoveForward")
+	#var inputLeftRight = Input.get_axis("MoveLeft","MoveRight")
+	#var inputForwardBack = Input.get_axis("MoveBackward","MoveForward")
 		# Spider Animation
 	# var animationTree : AnimationTree
 	# animationTree = meshAnimation.Anim_Tree
 	# var current_blend_pos : Vector2 = animationTree.get("parameters/blend_position")
-	var rawInput = Vector2(inputLeftRight, -inputForwardBack)
-	var input = Vector3(rawInput.x, 0, rawInput.y)
+	#var rawInput = Vector2(inputLeftRight, -inputForwardBack)
+	#var input = Vector3(rawInput.x, 0, rawInput.y)
 	# animationTree.set("parameters/blend_position", Vector2(lerp(current_blend_pos.x, rawInput.x, 0.3), lerp(current_blend_pos.y, -rawInput.y, 0.3)))
 	if Input.is_action_pressed("MoveForward"):
 		dir += dirBase.rotated( avgNormal.normalized(), -PI/2 )
@@ -156,7 +156,6 @@ func ManageStateBehavior(delta : float, currentState : CharacterState):
 			velocity = speed * get_dir() * delta
 			if not is_on_floor():
 				jumpVectors += gravity
-		#		avgNormal = Vector3.UP
 			else:
 				checkRays()
 				jumpVectors = Vector3.ZERO
@@ -179,6 +178,8 @@ func ManageStateBehavior(delta : float, currentState : CharacterState):
 			#if is_on_floor():
 				#HandleStateChange(CharacterState.MOVING)
 			#else:
+			# TODO: solve for any direction, not just forward
+			# TODO: use cross product of current up_direction vs original up_direction to detect how many times we've looped
 			up_direction = (grapplePoint - position).normalized()
 			velocity = -basis.z * grappleSpeedFactor * delta
 			velocity += up_direction * grappleDrawInFactor * delta
