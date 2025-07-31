@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://dd1thh4346sxi"]
 
 [ext_resource type="Script" uid="uid://7y87kc0aoch8" path="res://Scripts/SpiderController.gd" id="1_wubm4"]
-[ext_resource type="Script" path="res://GrappleLine.gd" id="2_v6m8r"]
+[ext_resource type="Script" uid="uid://s6d7nnkioe3o" path="res://GrappleLine.gd" id="2_v6m8r"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_l0jw5"]
 
@@ -352,19 +352,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Path3D" type="Path3D" parent="GrappleLine"]
-curve = SubResource("Curve3D_bouwt")
-
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="GrappleLine"]
-polygon = PackedVector2Array(0, 0.025, 0.0176777, 0.0176777, 0.025, 1.53081e-18, 0.0176777, -0.0176777, 3.06162e-18, -0.025, -0.0176777, -0.0176777, -0.025, -4.59243e-18, -0.0176777, 0.0176777)
-mode = 2
-path_node = NodePath("../Path3D")
-path_interval_type = 0
-path_interval = 1.0
-path_simplify_angle = 0.0
-path_rotation = 2
-path_rotation_accurate = false
-path_local = false
-path_continuous_u = true
-path_u_distance = 1.0
-path_joined = false
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1

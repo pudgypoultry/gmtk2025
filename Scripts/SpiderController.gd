@@ -7,6 +7,7 @@ enum CharacterState {GRAPPLING, MOVING, FALLING}
 @export var verticalCameraClamp : float = 89
 @export var speed : float = 5
 @export var runSpeed : float = 10
+@export var characterHeight : float = 2
 
 
 @export_category("Plugging in Nodes")
@@ -40,6 +41,7 @@ var grappleSpeedFactor : float = 1.0
 var grappleDrawInFactor : float = 1.0
 var lastVelocity : Vector3 = Vector3.ZERO
 var lastUpDirection : Vector3 = Vector3.UP
+var justGrappled : bool = false
 
 
 func _ready() -> void:
@@ -169,7 +171,9 @@ func ManageStateBehavior(delta : float, currentState : CharacterState):
 			if Input.is_action_just_pressed("Grapple"):
 				if grappleRay.is_colliding():
 					grapplePoint = grappleRay.get_collision_point()
+					lastVelocity = velocity
 					HandleStateChange(CharacterState.GRAPPLING)
+					return
 			velocity += jumpVectors
 			up_direction = avgNormal.normalized()
 		
@@ -180,7 +184,11 @@ func ManageStateBehavior(delta : float, currentState : CharacterState):
 			#else:
 			# TODO: solve for any direction, not just forward
 			# TODO: use cross product of current up_direction vs original up_direction to detect how many times we've looped
+			if justGrappled:
+				justGrappled = false
+				position += up_direction * characterHeight
 			up_direction = (grapplePoint - position).normalized()
+			velocity += jumpVectors
 			velocity = -basis.z * grappleSpeedFactor * delta
 			velocity += up_direction * grappleDrawInFactor * delta
 			grappleSpeedFactor += delta * 10
@@ -210,6 +218,7 @@ func HandleStateChange(newState : CharacterState):
 			grappleDrawInFactor = 1.0
 		CharacterState.GRAPPLING:
 			# grappleLine.visible = true
+			justGrappled = true
 			grappleSpeedFactor = speed
 			grappleLine.SetPathEnds(position, grapplePoint)
 		CharacterState.FALLING:

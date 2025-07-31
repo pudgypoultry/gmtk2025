@@ -58,7 +58,7 @@ mesh = SubResource("CylinderMesh_mppxg")
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_ajtta")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.09833, 0)
 rotationSpeed = 10.0
-verticalCameraClamp = 180.0
+verticalCameraClamp = 85.0
 speed = 400.0
 runSpeed = 600.0
 
