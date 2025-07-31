@@ -23,7 +23,7 @@ _data = {
 }
 point_count = 2
 
-[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder")]
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "grappleLine", "grappleRay")]
 script = ExtResource("1_wubm4")
 speed = 10.0
 runSpeed = 20.0
@@ -31,8 +31,11 @@ head = NodePath("Head")
 camera = NodePath("Head/Camera3D")
 camTarget = NodePath("Head/Camera3D/CamTarget")
 rayFolder = NodePath("RayFolder")
+grappleLine = NodePath("GrappleLine")
+grappleRay = NodePath("Head/Camera3D/GrappleRay")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("CapsuleMesh_l0jw5")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -40,6 +43,7 @@ shape = SubResource("CapsuleShape3D_quavu")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 7.91265e-08, 3.71717e-08, 0, 0.425195, -0.905102, -8.74228e-08, -0.905102, -0.425195, 0, 0.708, -0.455)
+visible = false
 mesh = SubResource("CylinderMesh_i6jhg")
 
 [node name="Head" type="Node3D" parent="."]
@@ -48,6 +52,35 @@ mesh = SubResource("CylinderMesh_i6jhg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.674992, -0.514291)
 
 [node name="CamTarget" type="Marker3D" parent="Head/Camera3D"]
+
+[node name="GrappleRay" type="RayCast3D" parent="Head/Camera3D"]
+target_position = Vector3(0, 0, -100)
+collision_mask = 2
+
+[node name="GrappleLine" type="Node3D" parent="." node_paths=PackedStringArray("csgPolygon", "path")]
+visible = false
+script = ExtResource("2_v6m8r")
+csgPolygon = NodePath("CSGPolygon3D")
+path = NodePath("Path3D")
+lineRadius = 0.025
+lineResolution = 8
+
+[node name="Path3D" type="Path3D" parent="GrappleLine"]
+curve = SubResource("Curve3D_bouwt")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="GrappleLine"]
+polygon = PackedVector2Array(0, 0.025, 0.0176777, 0.0176777, 0.025, 1.53076e-18, 0.0176777, -0.0176777, 3.06152e-18, -0.025, -0.0176777, -0.0176777, -0.025, -4.59227e-18, -0.0176777, 0.0176777)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
 
 [node name="RayFolder" type="Node3D" parent="."]
 
@@ -311,13 +344,13 @@ target_position = Vector3(0, -1.5, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 target_position = Vector3(0, -1.5, 0)
 
-[node name="GrappleLine" type="Node3D" parent="." node_paths=PackedStringArray("csgPolygon", "path")]
-visible = false
-script = ExtResource("2_v6m8r")
-csgPolygon = NodePath("CSGPolygon3D")
-path = NodePath("Path3D")
-lineRadius = 0.025
-lineResolution = 8
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Path3D" type="Path3D" parent="GrappleLine"]
 curve = SubResource("Curve3D_bouwt")
