@@ -53,7 +53,7 @@ collision_mask = 63488
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 light_color = Color(0.808639, 0.819342, 0.872209, 1)
-light_energy = 250.0
+light_energy = 350.0
 shadow_enabled = true
 omni_range = 87.0746
 omni_attenuation = 2.0
