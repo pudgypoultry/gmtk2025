@@ -4,7 +4,7 @@ enum CharacterState {GRAPPLING, MOVING, FALLING}
 
 @export_category("Game Rules")
 @export var rotationSpeed : float = 5.0
-@export var verticalCameraClamp : float = 75
+@export var verticalCameraClamp : float = 89
 @export var speed : float = 5
 @export var runSpeed : float = 10
 
@@ -15,6 +15,7 @@ enum CharacterState {GRAPPLING, MOVING, FALLING}
 @export var camTarget : Node3D
 @export var rayFolder : Node3D
 @export var grappleLine : GrappleLine
+@export var grappleRay : RayCast3D
 # @export var meshAnimation : Node3D
 # @export var spawnRay : RayCast3D
 
@@ -33,8 +34,8 @@ var bodyOn : StaticBody3D
 var currentTarget : Node3D = null
 var mouseSensMulti := 1
 var lastGravity : Vector3 = Vector3.ZERO
-var grappleTargetPosition : Vector3 = Vector3.ZERO
 var currentState : CharacterState = CharacterState.MOVING
+var grapplePoint : Vector3 = Vector3.ZERO
 var grappleSpeedFactor : float = 1.0
 var grappleDrawInFactor : float = 1.0
 var lastVelocity : Vector3 = Vector3.ZERO
@@ -152,7 +153,7 @@ func OrientCharacterToDirection(direction : Vector3, delta : float):
 func ManageStateBehavior(delta : float, currentState : CharacterState):
 	match currentState:
 		CharacterState.MOVING:
-			velocity = speed * get_dir()
+			velocity = speed * get_dir() * delta
 			if not is_on_floor():
 				jumpVectors += gravity
 		#		avgNormal = Vector3.UP
@@ -166,33 +167,51 @@ func ManageStateBehavior(delta : float, currentState : CharacterState):
 				speed = runSpeed
 			if Input.is_action_just_released("Run"):
 				speed = baseSpeed
+			if Input.is_action_just_pressed("Grapple"):
+				if grappleRay.is_colliding():
+					grapplePoint = grappleRay.get_collision_point()
+					HandleStateChange(CharacterState.GRAPPLING)
 			velocity += jumpVectors
 			up_direction = avgNormal.normalized()
+		
 		CharacterState.GRAPPLING:
-			if is_on_floor():
-				HandleStateChange(CharacterState.MOVING)
-			else:
-				pass
-				up_direction = grappleTargetPosition - position.normalized()
-				velocity = speed * get_dir() * grappleSpeedFactor + up_direction * grappleDrawInFactor * delta
-				grappleSpeedFactor += delta
-				grappleDrawInFactor += delta
-				lastVelocity = velocity
+			# grappleLine.SetPathEnds(position, grapplePoint - position)
+			#if is_on_floor():
+				#HandleStateChange(CharacterState.MOVING)
+			#else:
+			up_direction = (grapplePoint - position).normalized()
+			velocity = -basis.z * grappleSpeedFactor * delta
+			velocity += up_direction * grappleDrawInFactor * delta
+			grappleSpeedFactor += delta * 10
+			grappleDrawInFactor += delta * 50
+			lastVelocity = velocity
+			if Input.is_action_just_released("Grapple"):
+				lastUpDirection = up_direction
+				HandleStateChange(CharacterState.FALLING)
+		
 		CharacterState.FALLING:
-			if is_on_floor():
+			if is_on_floor() or is_on_wall() or is_on_ceiling():
 				HandleStateChange(CharacterState.MOVING)
 			else:
 				velocity = lastVelocity
 				up_direction = lastUpDirection
+				if Input.is_action_just_pressed("Grapple"):
+					if grappleRay.is_colliding():
+						grapplePoint = grappleRay.get_collision_point()
+						HandleStateChange(CharacterState.GRAPPLING)
 
 
 func HandleStateChange(newState : CharacterState):
-	currentState = newState
 	match newState:
 		CharacterState.MOVING:
+			grappleLine.visible = false
 			grappleSpeedFactor = 1.0
 			grappleDrawInFactor = 1.0
 		CharacterState.GRAPPLING:
-			pass
+			# grappleLine.visible = true
+			grappleSpeedFactor = speed
+			grappleLine.SetPathEnds(position, grapplePoint)
 		CharacterState.FALLING:
 			pass
+			# grappleLine.visible = false
+	currentState = newState

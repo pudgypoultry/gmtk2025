@@ -5,18 +5,18 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_l0jw5"]
 size = Vector3(2, 0.25, 2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6h2m2"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_quavu"]
 albedo_color = Color(0, 0.24282, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_quavu"]
-material = SubResource("StandardMaterial3D_6h2m2")
+material = SubResource("StandardMaterial3D_quavu")
 size = Vector3(2, 0.25, 2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_quavu"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6h2m2"]
 albedo_color = Color(0.425781, 0, 0.0680039, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6h2m2"]
-material = SubResource("StandardMaterial3D_quavu")
+material = SubResource("StandardMaterial3D_6h2m2")
 size = Vector3(2, 0.25, 2)
 
 [node name="TestGround" type="Node3D"]
