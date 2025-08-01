@@ -30,7 +30,7 @@ func MoveRadially(obj:Node3D, origin:Vector3=Vector3.ZERO, animate:bool=true) ->
 			if animate:
 				TweenTools.TweenPosition(obj, obj, 
 					obj.position - direction.normalized() * inactive_distance + origin,
-					0.5)
+					2.0)
 			else:
 				obj.position = (-direction.normalized() * inactive_distance + obj.position) + origin
 			
@@ -40,7 +40,7 @@ func MoveRadially(obj:Node3D, origin:Vector3=Vector3.ZERO, animate:bool=true) ->
 			if animate:
 				TweenTools.TweenPosition(obj, obj, 
 					obj.position + direction.normalized() * inactive_distance + origin,
-					0.5)
+					2.0)
 			else:
 				obj.position = (direction.normalized() * inactive_distance + obj.position) + origin
 			

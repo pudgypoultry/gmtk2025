@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dm7jkum4qeudl"]
+[gd_scene load_steps=12 format=3 uid="uid://dr66k8ebq4ha2"]
 
 [ext_resource type="Script" uid="uid://c8v3kuq0dhg26" path="res://Scenes/pillar_control.gd" id="1_o06y3"]
 [ext_resource type="PackedScene" uid="uid://svjf1k8bhx3" path="res://Scenes/ico_layer_01.tscn" id="3_k7acu"]
@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bju0nbj7k6ovq" path="res://Scenes/ico_layer_04.tscn" id="6_ikia7"]
 [ext_resource type="PackedScene" uid="uid://drclv0roa88dj" path="res://Scenes/ico_shell.tscn" id="7_k7acu"]
 [ext_resource type="PackedScene" uid="uid://dd1thh4346sxi" path="res://CharacterController.tscn" id="7_o06y3"]
-[ext_resource type="PackedScene" uid="uid://c4l1iciq0whd7" path="res://Scenes/normals_database.tscn" id="8_k7acu"]
+[ext_resource type="PackedScene" path="res://Scenes/normals_database.tscn" id="8_k7acu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o06y3"]
 sky_top_color = Color(0.0842139, 0.109491, 0.144642, 1)
@@ -31,21 +31,22 @@ pillar_set_L2 = NodePath("Ico_Layer_02")
 pillar_set_L3 = NodePath("Ico_Layer_03")
 pillar_set_L4 = NodePath("Ico_Layer_04")
 shell_node = NodePath("Ico_Shell")
-shell_detection_ray = NodePath("CharacterBody3D/ShellFinder")
+shell_detection_ray = NodePath("CharacterBody3D/Head/Camera3D/TargetRay")
 
 [node name="Ico_Layer_01" parent="." instance=ExtResource("3_k7acu")]
+inactive_distance = 30.0
 
 [node name="Ico_Layer_02" parent="." instance=ExtResource("4_5v1tr")]
+inactive_distance = 30.0
 
 [node name="Ico_Layer_03" parent="." instance=ExtResource("5_0fj1v")]
+inactive_distance = 30.0
 
 [node name="Ico_Layer_04" parent="." instance=ExtResource("6_ikia7")]
+inactive_distance = 30.0
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("7_o06y3")]
-rotationSpeed = 10.0
 verticalCameraClamp = 85.0
-speed = 400.0
-runSpeed = 600.0
 
 [node name="ShellFinder" type="RayCast3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.598501, -0.969988)
@@ -65,3 +66,5 @@ environment = SubResource("Environment_o06y3")
 [node name="Ico_Shell" parent="." instance=ExtResource("7_k7acu")]
 
 [node name="NormalsDatabase" parent="." instance=ExtResource("8_k7acu")]
+
+[editable path="CharacterBody3D"]

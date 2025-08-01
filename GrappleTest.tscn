@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dvg8avw6mf5bh"]
+[gd_scene load_steps=8 format=3 uid="uid://drd2xw4w8kxwr"]
 
 [ext_resource type="PackedScene" uid="uid://dd1thh4346sxi" path="res://CharacterController.tscn" id="1_ajtta"]
 
