@@ -1,9 +1,10 @@
 class_name IcoPillarMover
 extends Node3D
 
-@export var inactive_distance:float = 10.0
+@export var inactive_distance:float = 30.0
 @export var icosphere_layer: Node3D
 @export var layer:int
+@export var animation_length:float = 2
 
 enum pillar_state {IN, OUT, MOVING}
 
@@ -30,7 +31,9 @@ func MoveRadially(obj:Node3D, origin:Vector3=Vector3.ZERO, animate:bool=true) ->
 			if animate:
 				TweenTools.TweenPosition(obj, obj, 
 					obj.position - direction.normalized() * inactive_distance + origin,
-					2.0)
+					animation_length)
+				pillars[obj.name].state = pillar_state.MOVING
+				await get_tree().create_timer(animation_length).timeout
 			else:
 				obj.position = (-direction.normalized() * inactive_distance + obj.position) + origin
 			
@@ -40,9 +43,10 @@ func MoveRadially(obj:Node3D, origin:Vector3=Vector3.ZERO, animate:bool=true) ->
 			if animate:
 				TweenTools.TweenPosition(obj, obj, 
 					obj.position + direction.normalized() * inactive_distance + origin,
-					2.0)
+					animation_length)
+				pillars[obj.name].state = pillar_state.MOVING
+				await get_tree().create_timer(animation_length).timeout
 			else:
 				obj.position = (direction.normalized() * inactive_distance + obj.position) + origin
-			
 			pillars[obj.name].state = pillar_state.OUT
 	
