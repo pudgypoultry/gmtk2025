@@ -1,6 +1,8 @@
 extends Node3D
 
 var normals_database:Dictionary
+# Keys are strings
+# Values are Vector3
 @export var radien_step:float = PI / 30
 
 # Called when the node enters the scene tree for the first time.

@@ -140,7 +140,7 @@ func SteppedOnNewTile():
 
 func CheckForLoop():
 	pass
-	# Check to see if there are any tiles that have been looped
+	# Get average normal 
 
 
 func get_dir() -> Vector3:
