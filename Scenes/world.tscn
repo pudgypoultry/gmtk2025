@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dm7jkum4qeudl"]
+[gd_scene load_steps=12 format=3 uid="uid://dm7jkum4qeudl"]
 
 [ext_resource type="Script" uid="uid://c8v3kuq0dhg26" path="res://Scenes/pillar_control.gd" id="1_o06y3"]
 [ext_resource type="PackedScene" uid="uid://svjf1k8bhx3" path="res://Scenes/ico_layer_01.tscn" id="3_k7acu"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bju0nbj7k6ovq" path="res://Scenes/ico_layer_04.tscn" id="6_ikia7"]
 [ext_resource type="PackedScene" uid="uid://drclv0roa88dj" path="res://Scenes/ico_shell.tscn" id="7_k7acu"]
 [ext_resource type="PackedScene" uid="uid://dd1thh4346sxi" path="res://CharacterController.tscn" id="7_o06y3"]
+[ext_resource type="PackedScene" uid="uid://c4l1iciq0whd7" path="res://Scenes/normals_database.tscn" id="8_k7acu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o06y3"]
 sky_top_color = Color(0.0842139, 0.109491, 0.144642, 1)
@@ -62,3 +63,5 @@ omni_attenuation = 2.0
 environment = SubResource("Environment_o06y3")
 
 [node name="Ico_Shell" parent="." instance=ExtResource("7_k7acu")]
+
+[node name="NormalsDatabase" parent="." instance=ExtResource("8_k7acu")]

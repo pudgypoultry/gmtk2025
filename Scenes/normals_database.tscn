@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4l1iciq0whd7"]
+
+[ext_resource type="Script" uid="uid://cjojn0qi6ja4s" path="res://normals_database.gd" id="1_g83e7"]
+
+[node name="NormalsDatabase" type="Node3D"]
+script = ExtResource("1_g83e7")
