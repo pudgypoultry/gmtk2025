@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0s35icbe05hh"]
+
+[ext_resource type="PackedScene" uid="uid://u2nk4w80i38i" path="res://Assets/EyeMinion.glb" id="1_7wueb"]
+[ext_resource type="Script" uid="uid://b0be2rkivpex3" path="res://Scenes/eye_minion.gd" id="1_bh5t3"]
+
+[node name="EyeMinion" type="Node3D"]
+script = ExtResource("1_bh5t3")
+
+[node name="EyeMinion" parent="." instance=ExtResource("1_7wueb")]
+
+[node name="NavRays" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.31901, 0)
+
+[node name="Front" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(0.988809, 0.14919, 0, -0.14919, 0.988809, 0, 0, 0, 1, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="RightFront" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(0.699193, 0.105493, -0.707107, -0.14919, 0.988809, 0, 0.699193, 0.105493, 0.707107, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="Right" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(5.96046e-08, 7.45058e-09, -1, -0.14919, 0.988809, -5.26836e-09, 0.988809, 0.14919, -2.98023e-08, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="RightBack" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-0.699193, -0.105493, -0.707107, -0.14919, 0.988809, -5.26836e-09, 0.699193, 0.105493, -0.707107, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="Back" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-0.988809, -0.14919, 0, -0.14919, 0.988809, -1.05367e-08, 8.9407e-08, 1.49012e-08, -1, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="LeftBack" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-0.699193, -0.105493, 0.707107, -0.14919, 0.988809, -4.08432e-09, -0.699193, -0.105493, -0.707107, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="Left" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-5.96046e-08, 7.45058e-09, 1, -0.14919, 0.988809, -1.38767e-08, -0.988808, -0.14919, 4.47035e-08, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="LeftFront" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(0.699193, 0.105493, 0.707107, -0.14919, 0.988809, -1.4621e-08, -0.699193, -0.105493, 0.707107, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
