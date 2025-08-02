@@ -1,0 +1,115 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7yji8n3x4417"]
+
+[ext_resource type="Script" uid="uid://cudpuqjfk7xkd" path="res://Scenes/Menu/arrow.gd" id="3_7jtkx"]
+[ext_resource type="Script" uid="uid://de3ddj8cwj4by" path="res://Scenes/Menu/SceneButton.gd" id="4_ab7fb"]
+[ext_resource type="Texture2D" uid="uid://7i01sos254te" path="res://Assets/images/Logo.png" id="4_vmek6"]
+[ext_resource type="Script" uid="uid://b4x71nrkrg610" path="res://Scenes/Menu/ExitButton.gd" id="5_gpijq"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Options" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -239.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Options"]
+layout_mode = 2
+alignment = 1
+
+[node name="Start" type="HBoxContainer" parent="Options/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Arrow" type="Label" parent="Options/VBoxContainer/Start"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+script = ExtResource("3_7jtkx")
+
+[node name="Text" type="Button" parent="Options/VBoxContainer/Start"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Start"
+flat = true
+script = ExtResource("4_ab7fb")
+nextScene = "res://Scenes/world.tscn"
+
+[node name="Credits" type="HBoxContainer" parent="Options/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Arrow" type="Label" parent="Options/VBoxContainer/Credits"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+script = ExtResource("3_7jtkx")
+
+[node name="Text" type="Button" parent="Options/VBoxContainer/Credits"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Credits"
+flat = true
+script = ExtResource("4_ab7fb")
+nextScene = "res://Scenes/Menu/Credits.tscn"
+
+[node name="Exit" type="HBoxContainer" parent="Options/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Arrow" type="Label" parent="Options/VBoxContainer/Exit"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+script = ExtResource("3_7jtkx")
+
+[node name="Text" type="Button" parent="Options/VBoxContainer/Exit"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Exit"
+flat = true
+script = ExtResource("5_gpijq")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 640.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_vmek6")
+
+[connection signal="mouse_entered" from="Options/VBoxContainer/Start" to="Options/VBoxContainer/Start/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Options/VBoxContainer/Start" to="Options/VBoxContainer/Start/Arrow" method="HideArrow"]
+[connection signal="mouse_entered" from="Options/VBoxContainer/Start/Text" to="Options/VBoxContainer/Start/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Options/VBoxContainer/Start/Text" to="Options/VBoxContainer/Start/Arrow" method="HideArrow"]
+[connection signal="pressed" from="Options/VBoxContainer/Start/Text" to="Options/VBoxContainer/Start/Text" method="_on_pressed"]
+[connection signal="mouse_entered" from="Options/VBoxContainer/Credits" to="Options/VBoxContainer/Credits/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Options/VBoxContainer/Credits" to="Options/VBoxContainer/Credits/Arrow" method="HideArrow"]
+[connection signal="mouse_entered" from="Options/VBoxContainer/Credits/Text" to="Options/VBoxContainer/Credits/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Options/VBoxContainer/Credits/Text" to="Options/VBoxContainer/Credits/Arrow" method="HideArrow"]
+[connection signal="pressed" from="Options/VBoxContainer/Credits/Text" to="Options/VBoxContainer/Credits/Text" method="_on_pressed"]
+[connection signal="mouse_entered" from="Options/VBoxContainer/Exit" to="Options/VBoxContainer/Exit/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Options/VBoxContainer/Exit" to="Options/VBoxContainer/Exit/Arrow" method="HideArrow"]
+[connection signal="mouse_entered" from="Options/VBoxContainer/Exit/Text" to="Options/VBoxContainer/Exit/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Options/VBoxContainer/Exit/Text" to="Options/VBoxContainer/Exit/Arrow" method="HideArrow"]
+[connection signal="pressed" from="Options/VBoxContainer/Exit/Text" to="Options/VBoxContainer/Exit/Text" method="_on_pressed"]

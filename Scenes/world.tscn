@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dr66k8ebq4ha2"]
+[gd_scene load_steps=13 format=3 uid="uid://dr66k8ebq4ha2"]
 
 [ext_resource type="Script" uid="uid://c8v3kuq0dhg26" path="res://Scenes/pillar_control.gd" id="1_o06y3"]
 [ext_resource type="PackedScene" uid="uid://ba07esqafqwyi" path="res://Sandboxes/Andrew/TestBall.tscn" id="2_k7acu"]

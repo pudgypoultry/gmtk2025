@@ -1,0 +1,84 @@
+[gd_scene load_steps=4 format=3 uid="uid://b883bk1novw8j"]
+
+[ext_resource type="Texture2D" uid="uid://cue46lxyb4hep" path="res://Assets/Textures/TitleSplash.png" id="1_6wcx4"]
+[ext_resource type="Script" uid="uid://cudpuqjfk7xkd" path="res://Scenes/Menu/arrow.gd" id="2_rc2un"]
+[ext_resource type="Script" uid="uid://de3ddj8cwj4by" path="res://Scenes/Menu/SceneButton.gd" id="3_rc2un"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("1_6wcx4")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="MarginContainer2"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+text = "Developers -
+Andrew Teske - Character Controller
+Cory Johns - Modeling and Animation
+Stella Greenvoss - NPCs and Navigation
+Samuel Ellis - Main Theme
+
+Assets -
+Dry Footsteps Loop by qubodup -- https://freesound.org/s/816017/ -- License: Creative Commons 0
+
+Hiking Boot Footsteps on Stone by Fission9 -- https://freesound.org/s/521590/ -- License: Creative Commons 0
+
+Spider Voice.wav by columbia23 -- https://freesound.org/s/395395/ -- License: Attribution 4.0
+
+human male scream 2 by JohnsonBrandEditing -- https://freesound.org/s/243376/ -- License: Creative Commons 0
+
+Sticky Gross Squeeze.mp3 by DARTEKZ_GAMEZ -- https://freesound.org/s/649362/ -- License: Creative Commons 0"
+
+[node name="Credits" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -77.0
+offset_right = 300.0
+grow_vertical = 0
+alignment = 1
+
+[node name="Arrow" type="Label" parent="Credits"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+script = ExtResource("2_rc2un")
+
+[node name="Text" type="Button" parent="Credits"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Back"
+flat = true
+script = ExtResource("3_rc2un")
+nextScene = "res://Scenes/Menu/main_menu.tscn"
+
+[connection signal="mouse_entered" from="Credits" to="Credits/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Credits" to="Credits/Arrow" method="HideArrow"]
+[connection signal="mouse_entered" from="Credits/Text" to="Credits/Arrow" method="ShowArrow"]
+[connection signal="mouse_exited" from="Credits/Text" to="Credits/Arrow" method="HideArrow"]
+[connection signal="pressed" from="Credits/Text" to="Credits/Text" method="_on_pressed"]
