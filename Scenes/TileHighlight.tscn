@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://d0ma01gpfrsha"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y75rj"]
+transparency = 1
+albedo_color = Color(0.831373, 0, 1, 0.501961)
+emission_enabled = true
+emission = Color(0.718513, 0, 0.726563, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_yukfc"]
+material = SubResource("StandardMaterial3D_y75rj")
+radius = 2.0
+height = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_earnb"]
+radius = 1.98115
+
+[node name="TileHighlight" type="MeshInstance3D"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("SphereMesh_yukfc")
+
+[node name="Highlight_Static" type="StaticBody3D" parent="."]
+collision_layer = 256
+collision_mask = 256
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Highlight_Static"]
+shape = SubResource("SphereShape3D_earnb")
