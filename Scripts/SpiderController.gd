@@ -6,32 +6,43 @@ extends CharacterBody3D
 @export var speed : float = 5
 @export var runSpeed : float = 10
 @export var maxTileLineLength : int = 10
+@export var tileCheckTolerance : float = 0.05
+@export var rotationCheckTolerance : float = 0.05
+@export var rotationCheckInterval : float = 0.005
+
 
 @export_category("Plugging in Nodes")
 @export var head : Node3D
 @export var camera : Node3D
 @export var camTarget : Node3D
 @export var rayFolder : Node3D
-@export var downRayFolder : Node3D
-@export var forwardRayFolder : Node3D
-@export var downForwardRayFolder : Node3D
+@export var normalCheckray : RayCast3D
+@export var debugShape : MeshInstance3D
 
+var worldReference
 var gravity := Vector3(0,-3,0)
 var jumpVec := Vector3(0, 75, 0)
-var avgNormal : Vector3 = Vector3.ZERO
+var avgNormal : Vector3 = Vector3.UP
 var MOUSE_SENS := 0.005
+var tileCheckTimer : float = 0.0
+var rotationCheckTimer : float = 0.0
 var baseSpeed
 var extravelocity := Vector3.ZERO
 var jumpVectors := Vector3.ZERO
+var lastUpDirection : Vector3 = Vector3.UP
 var bodyOn : StaticBody3D
 var currentTarget : Node3D = null
 var mouseSensMulti := 1
 var tempDict : Dictionary = {}
-
-var visitedTiles : Array = []
+var visitedTileNormals : Array = []
+var checkingForNewTile : bool = false
+var onDifferentTile : bool = true
+var isRotating : bool = false
+var currentLevel : int = 1
 
 
 func _ready() -> void:
+	worldReference = get_parent()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	velocity = Vector3.ZERO
 	baseSpeed = speed
@@ -68,25 +79,7 @@ func checkRays() -> void:
 		if r.is_colliding():
 			numOfRaysColliding += 1
 			avgNor += r.get_collision_normal()
-	#for ray in downRayFolder.get_children():
-		#var r : RayCast3D = ray
-		#if r.is_colliding():
-			#numOfRaysColliding += 1
-			#avgNor += r.get_collision_normal()
-			#print("Down Normal: " + str(r.get_collision_normal()))
-	#for ray in forwardRayFolder.get_children():
-		#var r : RayCast3D = ray
-		#if r.is_colliding():
-			#numOfRaysColliding += 1
-			#avgNor += r.get_collision_normal()
-			#forwardColliding = true
-	#if !forwardColliding:
-		#for ray in downForwardRayFolder.get_children():
-			#var r : RayCast3D = ray
-			#if r.is_colliding():
-				#numOfRaysColliding += 1
-				#avgNor += r.get_collision_normal()
-				#print("DownForward Normal: " + str(r.get_collision_normal()))
+
 	if avgNor:
 		avgNor /= numOfRaysColliding
 		avgNormal = avgNor.normalized()
@@ -112,6 +105,15 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	rotationCheckTimer += delta
+	if rotationCheckTimer > rotationCheckInterval:
+		rotationCheckTimer = 0
+		if up_direction.dot(lastUpDirection) > 1 - rotationCheckTolerance:
+			isRotating = false
+		else: 
+			isRotating = true
+		lastUpDirection = up_direction
+		print(isRotating)
 	OrientCharacterToDirection(up_direction, delta)
 	velocity = speed * get_dir()
 	checkRays()
@@ -121,26 +123,84 @@ func _physics_process(delta: float) -> void:
 	elif is_on_floor():
 		jumpVectors = Vector3.ZERO
 	velocity += jumpVectors
+	ManagevisitedTileNormals(delta)
 	up_direction = avgNormal.normalized()
 	move_and_slide()
 
 
-func ManageVisitedTiles():
-	pass
+func ManagevisitedTileNormals(delta):
+	var newTileFound = false
+	
+	# if our up_direction changed, we're potentially on a new tile
+	if !isRotating && onDifferentTile:
+		checkingForNewTile = true
+		onDifferentTile = false
+	
+	# if current tile is the same as last we checked and we are in the state of checking to see that we're on a new tile
+	if checkingForNewTile and lastUpDirection == up_direction:
+		# need to see if we've been on the same up_direction for some amount of time
+		tileCheckTimer += delta
+		if tileCheckTimer > tileCheckTolerance && !isRotating:
+			newTileFound = true
+			tileCheckTimer = 0
+	
+	if newTileFound:
+		if normalCheckray.is_colliding():
+			SteppedOnNewTile(normalCheckray.get_collision_normal())
 
 
-func SteppedOnNewTile():
-	pass
+
+func SteppedOnNewTile(tileNormal : Vector3):
 	# if up_direction changes AND new up_direction is contained in the tile dictionary,
 	#	then I stepped on a new tile for sure
 	# First, check that that tile is not in the array already
 	#	If it is, initiate check for successful loop
 	#	Otherwise, light it up and keep going
+	if normalCheckray.is_colliding():
+		var currentNormal = normalCheckray.get_collision_normal()
+		var currentKey = NormalsDatabase.NormalToKey(currentNormal)
+		if currentKey in NormalsDatabase.normals_database.keys():
+			var newTile = NormalsDatabase.normals_database[currentKey]
+			if newTile in visitedTileNormals and newTile != visitedTileNormals[len(visitedTileNormals)-1]:
+				CheckForTileLoop()
+			elif newTile not in visitedTileNormals:
+				print("Added " + str(newTile) + " to visited tiles!")
+				visitedTileNormals.append(newTile)
+				var newDebugCheck = debugShape.duplicate()
+				get_parent().add_child(newDebugCheck)
+				newDebugCheck.position = global_position
+	onDifferentTile = true
 
 
-func CheckForLoop():
-	pass
+func CheckForTileLoop():
+	# Make sure there are at least 3 tiles, otherwise it's just doubling back and you know whatever
 	# Get average normal 
+	print("Starting tile loop check")
+	var average = Vector3.ZERO
+	var numNormals = 0
+	for norm in visitedTileNormals:
+		numNormals += 1
+		average += norm
+	if average:
+		average /= numNormals
+		average = average.normalized()
+
+	# If any tile in the dict *and* that isn't in visitedTileNormals has a closer dot product to the avg normal than
+	# any tile in visitedTileNormals, we know it's been looped
+	var minDotProductDifference = 1
+	for tile in visitedTileNormals:
+		var currentDot = average.dot(tile)
+		if 1 - currentDot < minDotProductDifference:
+			minDotProductDifference = currentDot
+	for tile in NormalsDatabase.normals_database.values():
+		if 1 - average.dot(tile) < minDotProductDifference and tile not in visitedTileNormals:
+			ActivateTile(tile)
+	visitedTileNormals.clear()
+
+
+func ActivateTile(tile : Vector3):
+	print("Activating: " + str(tile))
+	worldReference.ActivatePillar
 
 
 func get_dir() -> Vector3:

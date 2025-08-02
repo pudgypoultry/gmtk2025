@@ -15,7 +15,7 @@ top_radius = 0.1
 bottom_radius = 0.3
 height = 0.1
 
-[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "downRayFolder", "forwardRayFolder", "downForwardRayFolder")]
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray", "debugShape")]
 script = ExtResource("1_wubm4")
 speed = 10.0
 runSpeed = 20.0
@@ -23,9 +23,8 @@ head = NodePath("Head")
 camera = NodePath("Head/Camera3D")
 camTarget = NodePath("Head/Camera3D/CamTarget")
 rayFolder = NodePath("RayFolder")
-downRayFolder = NodePath("RayFolderModified/Down")
-forwardRayFolder = NodePath("RayFolderModified/Forward")
-downForwardRayFolder = NodePath("RayFolderModified/DownForward")
+normalCheckray = NodePath("GroundNormalCheck")
+debugShape = NodePath("MeshInstance3D")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_l0jw5")
@@ -743,64 +742,6 @@ transform = Transform3D(-2.98023e-08, 0, 1, -0.258819, 0.965926, -1.34513e-08, -
 target_position = Vector3(1, 0, 0)
 hit_back_faces = false
 
-[node name="RayFolderModified" type="Node3D" parent="."]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
-visible = false
-
-[node name="Down" type="Node3D" parent="RayFolderModified"]
-
-[node name="RayCast3D" type="RayCast3D" parent="RayFolderModified/Down"]
-hit_back_faces = false
-
-[node name="RayCast3D4" type="RayCast3D" parent="RayFolderModified/Down"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
-hit_back_faces = false
-
-[node name="RayCast3D7" type="RayCast3D" parent="RayFolderModified/Down"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
-hit_back_faces = false
-
-[node name="Forward" type="Node3D" parent="RayFolderModified"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-
-[node name="RayCast3D" type="RayCast3D" parent="RayFolderModified/Forward"]
-hit_back_faces = false
-
-[node name="RayCast3D4" type="RayCast3D" parent="RayFolderModified/Forward"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
-hit_back_faces = false
-
-[node name="RayCast3D7" type="RayCast3D" parent="RayFolderModified/Forward"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
-hit_back_faces = false
-
-[node name="RayCast3D2" type="RayCast3D" parent="RayFolderModified/Forward"]
-hit_back_faces = false
-
-[node name="RayCast3D5" type="RayCast3D" parent="RayFolderModified/Forward"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
-hit_back_faces = false
-
-[node name="RayCast3D8" type="RayCast3D" parent="RayFolderModified/Forward"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
-hit_back_faces = false
-
-[node name="DownForward" type="Node3D" parent="RayFolderModified"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.5, -0.75)
-
-[node name="RayCast3D" type="RayCast3D" parent="RayFolderModified/DownForward"]
-target_position = Vector3(0, -1.25, 0)
-hit_back_faces = false
-
-[node name="RayCast3D4" type="RayCast3D" parent="RayFolderModified/DownForward"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
-hit_back_faces = false
-
-[node name="RayCast3D7" type="RayCast3D" parent="RayFolderModified/DownForward"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
-target_position = Vector3(0, -1.5, 0)
-hit_back_faces = false
-
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
@@ -819,3 +760,8 @@ grow_vertical = 2
 text = "+"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="GroundNormalCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.72974, 0)
+collision_mask = 2049
+hit_back_faces = false

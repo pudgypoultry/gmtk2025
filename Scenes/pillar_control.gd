@@ -7,6 +7,14 @@ extends Node3D
 @export var pillar_set_L4:IcoPillarMover
 @export var shell_node:Node3D
 @export var shell_detection_ray:RayCast3D
+@export var player_detection_ray:RayCast3D
+
+var pillar_sets = [pillar_set_L1, pillar_set_L2, pillar_set_L3, pillar_set_L4]
+
+
+func _process(delta) -> void:
+	player_detection_ray.target_position = player_node.global_position * 2
+
 
 func _input(event) -> void:
 	if event.is_action_pressed("Toggle Pillar L1"):
@@ -33,12 +41,25 @@ func _input(event) -> void:
 		#var obj:Node3D = FindNearestPillar(pillar_set_L4)
 		if obj:
 			pillar_set_L4.MoveRadially(obj)
-		
+
+
 func FindNearestPillar(pillar_set) -> Node3D:
 	var min_pos:float = 10000000
 	var target:Node3D
 	for pillar in pillar_set.get_child(0).get_children():
 		var dis:float = (pillar.position - player_node.position).length_squared()
+		if dis < min_pos:
+			min_pos = dis
+			target = pillar
+	print("found target: " + target.name)
+	return target
+
+
+func FindNearestPillarToPostion(set_number : int, pos : Vector3) -> Node3D:
+	var min_pos:float = 10000000
+	var target:Node3D
+	for pillar in pillar_sets[set_number - 1].get_child(0).get_children():
+		var dis:float = (pillar.position - pos).length_squared()
 		if dis < min_pos:
 			min_pos = dis
 			target = pillar
@@ -71,3 +92,7 @@ func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, layer_int:int=12) ->
 		# return pillar matching set
 		return result.collider.get_parent()
 	return null
+
+
+func ActivatePillar(pillar : Node3D, layer : int) -> void:
+		pillar_sets[layer - 1].MoveRadially(pillar)

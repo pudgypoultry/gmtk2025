@@ -22,7 +22,7 @@ background_mode = 2
 background_color = Color(0.427493, 0.427493, 0.427493, 1)
 sky = SubResource("Sky_k7acu")
 
-[node name="World" type="Node3D" node_paths=PackedStringArray("player_node", "pillar_set_L1", "pillar_set_L2", "pillar_set_L3", "pillar_set_L4", "shell_node", "shell_detection_ray")]
+[node name="World" type="Node3D" node_paths=PackedStringArray("player_node", "pillar_set_L1", "pillar_set_L2", "pillar_set_L3", "pillar_set_L4", "shell_node", "shell_detection_ray", "player_detection_ray")]
 script = ExtResource("1_o06y3")
 player_node = NodePath("CharacterBody3D")
 pillar_set_L1 = NodePath("Ico_Layer_01")
@@ -31,6 +31,7 @@ pillar_set_L3 = NodePath("Ico_Layer_03")
 pillar_set_L4 = NodePath("Ico_Layer_04")
 shell_node = NodePath("Ico_Shell")
 shell_detection_ray = NodePath("CharacterBody3D/Head/Camera3D/TargetRay")
+player_detection_ray = NodePath("PlayerDetectionRay")
 
 [node name="Ico_Layer_01" parent="." instance=ExtResource("3_k7acu")]
 inactive_distance = 10.0
@@ -47,8 +48,14 @@ inactive_distance = 25.0
 inactive_distance = 30.0
 animation_length = 2.5
 
+[node name="PlayerDetectionRay" type="RayCast3D" parent="."]
+collision_mask = 2048
+hit_back_faces = false
+
 [node name="CharacterBody3D" parent="." instance=ExtResource("7_o06y3")]
+rotationSpeed = 10.0
 verticalCameraClamp = 85.0
+rotationCheckTolerance = 0.01
 
 [node name="ShellFinder" type="RayCast3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.598501, -0.969988)
