@@ -16,7 +16,7 @@ top_radius = 0.1
 bottom_radius = 0.3
 height = 0.1
 
-[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray")]
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray", "scoreLabel", "timeLabel")]
 script = ExtResource("1_wubm4")
 speed = 10.0
 runSpeed = 20.0
@@ -26,6 +26,8 @@ camTarget = NodePath("Head/Camera3D/CamTarget")
 rayFolder = NodePath("RayFolder")
 normalCheckray = NodePath("GroundNormalCheck")
 tileLightUp = ExtResource("2_v6m8r")
+scoreLabel = NodePath("Control/MarginContainer/VBoxContainer/Score")
+timeLabel = NodePath("Control/MarginContainer/VBoxContainer/Time")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_l0jw5")

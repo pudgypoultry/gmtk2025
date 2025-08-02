@@ -14,6 +14,7 @@ extends CharacterBody3D
 @export var planeIntersectionTolerance : float = 0.01
 @export var scorePerTile : int = 100
 @export var scoreLengthMultiplier : float = 1.1
+@export var startingTime : float = 60.0
 
 
 @export_category("Plugging in Nodes")
@@ -52,6 +53,7 @@ var cooldownTimer : float = 0.0
 var currentLevel : int = 1
 var lastTileNormal : Vector3 = Vector3.UP
 var playerScore : int = 0
+var remainingTime
 
 
 func _ready() -> void:
@@ -61,6 +63,7 @@ func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	velocity = Vector3.ZERO
 	baseSpeed = speed
+	remainingTime = startingTime
 
 
 func bodyEntered(body) -> void:
@@ -117,6 +120,9 @@ func _process(delta: float) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	remainingTime -= delta
+	scoreLabel.text = "SCORE: " + str(playerScore)
+	scoreLabel.text = "TIME LEFT: %.2f" % [remainingTime]
 
 
 func _physics_process(delta: float) -> void:
