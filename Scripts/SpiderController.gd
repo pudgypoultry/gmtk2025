@@ -182,12 +182,13 @@ func SteppedOnNewTile(tileNormal : Vector3):
 		if currentKey in NormalDatabaseKeys():
 			var newTile = NormalsDatabase.normals_database[currentKey]
 			if newTile in visitedTileNormals and newTile != visitedTileNormals[len(visitedTileNormals)-1] and len(visitedTileNormals) > 2:
-				CheckForTileLoop()
+				CheckForTileLoop(newTile)
 			elif newTile not in visitedTileNormals:
 				# print("Added " + str(newTile) + " to visited tiles!")
 				visitedTileNormals.append(newTile)
 				var newDebugCheck = debugShape.duplicate()
 				get_parent().add_child(newDebugCheck)
+				newDebugCheck.basis = basis
 				newDebugCheck.position = global_position
 				debugArray.append(newDebugCheck)
 				print(visitedTileNormals)
@@ -195,14 +196,21 @@ func SteppedOnNewTile(tileNormal : Vector3):
 			lastTileNormal = newTile
 
 
-func CheckForTileLoop():
+func CheckForTileLoop(repeatedTile):
 	isOnCooldown = true
 	# Make sure there are at least 3 tiles, otherwise it's just doubling back and you know whatever
 	# Get average normal 
 	print("Starting tile loop check")
+	var loopedTiles = []
+	var atLooped = false
+	for tile in visitedTileNormals:
+		if tile == repeatedTile:
+			atLooped = true
+		if atLooped:
+			loopedTiles.append(tile)
 	var average = Vector3.ZERO
 	var numNormals = 0
-	for norm in visitedTileNormals:
+	for norm in loopedTiles:
 		numNormals += 1
 		average += norm
 	if average:
@@ -212,7 +220,7 @@ func CheckForTileLoop():
 	# If any tile in the dict *and* that isn't in visitedTileNormals has a closer dot product to the avg normal than
 	# any tile in visitedTileNormals, we know it's been looped
 	var minDotProductDifference = 1
-	for tile in visitedTileNormals:
+	for tile in loopedTiles:
 		var currentDot = average.dot(tile)
 		if 1 - currentDot < minDotProductDifference:
 			minDotProductDifference = 1 - currentDot
@@ -223,6 +231,7 @@ func CheckForTileLoop():
 		debugArray.pop_front().queue_free()
 		await get_tree().create_timer(0.2).timeout
 
+
 func ActivateTiles(average : Vector3, minDotProductDifference : float):
 	for tile in NormalsDatabase.normals_database.values():
 		var currentDot = average.dot(tile)
@@ -230,6 +239,7 @@ func ActivateTiles(average : Vector3, minDotProductDifference : float):
 		if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
 			ActivateTile(tile)
 			await get_tree().create_timer(1).timeout
+
 
 func ActivateTile(tile : Vector3):
 	print("Trying to activate: " + str(NormalToKey(tile)) + " : " + str(NormalsDatabase.normals_database[NormalToKey(tile)]))
