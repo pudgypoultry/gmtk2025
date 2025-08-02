@@ -1,20 +1,11 @@
 extends State
 @onready var movement_manager: MovementManager = $"../../MovementManager"
+@export var stuck: State
 var is_moving:bool = false
-var reset_collision_mask:int = pow(2, 12-1)
+
 
 func Enter(old_state:State) -> void:
 	super(old_state)
-	var local_up:Vector3 = movement_manager.eye_minion.basis.y
-	# move to ground
-	var result = NormalsDatabase.PhysicsProcessRaycast(movement_manager.eye_minion.position, -local_up * 100, reset_collision_mask)
-	if result:
-		#print("Current Eye position", movement_manager.eye_minion.position)
-		#print("Reset Eye position ", result.position)
-		#print("target collision: ", result.collider.get_parent().name)
-		movement_manager.eye_minion.position = result.position
-	else:
-		print("Failed to reset Eye position")
 	
 func Exit(new_state:State) -> void:
 	super(new_state)
@@ -39,3 +30,5 @@ func Physics_Update(_delta) -> void:
 				await get_tree().create_timer(movement_manager.move_time).timeout
 				is_moving = false
 				return
+		# none of the ray directions worked, transistion to Stuck
+		stuck.Enter(self)

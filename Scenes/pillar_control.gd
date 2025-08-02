@@ -46,7 +46,7 @@ func FindNearestPillar(pillar_set) -> Node3D:
 		if dis < min_pos:
 			min_pos = dis
 			target = pillar
-	print("found target: " + target.name)
+	#print("found target: " + target.name)
 	return target
 
 
@@ -68,7 +68,7 @@ func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, debug : bool = false
 	# activate the ray cast
 	var result = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, -shell_normal * 100, pow(2, set_number+layer_int-1))
 	if result:
-		print("Found Pillar: " + result.collider.get_parent().name)
+		#print("Found Pillar: " + result.collider.get_parent().name)
 		# return pillar matching set
 		return result.collider.get_parent()
 	return null

@@ -1,8 +1,11 @@
 extends Node3D
 
 var normals_database:Dictionary
-# Keys are strings
-# Values are Vector3
+# Keys are strings - id of tile (normal to 1 decimal place)
+# Values are Vector3 - normal of tile
+var positions_database:Dictionary
+# Keys are strings - id of tile
+# Values are Vector3 - position of tile center
 @export var radien_step:float = PI / 30
 
 # Called when the node enters the scene tree for the first time.
@@ -19,6 +22,12 @@ func _ready() -> void:
 		# increment phi
 		phi += radien_step
 	print("Added %d normal values" % normals_database.size())
+	# build the position database
+	for key in normals_database.keys():
+		var result = PhysicsProcessRaycast(Vector3.ZERO, -normals_database[key]*200, pow(2, 12-1))
+		if result:
+			positions_database[key] = result.position
+	print("Added %d position values" % positions_database.size())
 
 
 func TryAddNormal(ray:Vector3) -> void:
