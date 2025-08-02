@@ -48,6 +48,8 @@ var lastTileNormal : Vector3 = Vector3.UP
 
 
 func _ready() -> void:
+	NormalsDatabase.normals_database.clear()
+	NormalsDatabase._ready()
 	worldReference = get_parent()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	velocity = Vector3.ZERO

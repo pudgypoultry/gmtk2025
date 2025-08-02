@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://d0s35icbe05hh"]
 
-[ext_resource type="PackedScene" uid="uid://u2nk4w80i38i" path="res://Assets/EyeMinion.glb" id="1_7wueb"]
+[ext_resource type="PackedScene" uid="uid://ham0jv6trpqv" path="res://Assets/EyeMinion.glb" id="1_7wueb"]
 [ext_resource type="Script" uid="uid://b0be2rkivpex3" path="res://Scenes/eye_minion.gd" id="1_bh5t3"]
 [ext_resource type="Script" uid="uid://7g1a6d6qtery" path="res://Scenes/state_manager.gd" id="3_n4b0p"]
 [ext_resource type="Script" uid="uid://bcnysqfv7chmy" path="res://Scenes/StateMachine/patrolling.gd" id="4_eqsn6"]
