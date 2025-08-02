@@ -57,15 +57,9 @@ func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, layer_int:int=12) ->
 			# get the normal direction on shell
 			shell_normal = ray.get_collision_normal()
 
-	# check the physics process directly for the temporary raycast
-	var space_state = get_world_3d().direct_space_state
-	# check from the origin in the direction of -shell_normal
-	var query = PhysicsRayQueryParameters3D.create(Vector3.ZERO, -shell_normal * 100)
-	# set layer mask layer to set_number + layer_int
-	query.set_collision_mask(pow(2, set_number+layer_int-1))
 	#await get_tree().create_timer(10).timeout
 	# activate the ray cast
-	var result = space_state.intersect_ray(query)
+	var result = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, -shell_normal * 100, pow(2, set_number+layer_int-1))
 	if result:
 		print("Found Pillar: " + result.collider.get_parent().name)
 		# return pillar matching set
