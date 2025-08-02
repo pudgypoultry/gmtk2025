@@ -234,7 +234,7 @@ func CheckForTileLoop(repeatedTile):
 	visitedTileNormals.clear()
 	for i in range(len(debugArray)):
 		debugArray.pop_front().queue_free()
-		await get_tree().create_timer(0.2).timeout
+		# await get_tree().create_timer(0.2).timeout
 
 
 func ActivateTiles(average : Vector3, minDotProductDifference : float):
@@ -243,7 +243,7 @@ func ActivateTiles(average : Vector3, minDotProductDifference : float):
 		# print("Current diff: " + str(1 - currentDot))
 		if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
 			ActivateTile(tile)
-			await get_tree().create_timer(1).timeout
+			await get_tree().create_timer(0.2).timeout
 
 
 func ActivateTile(tile : Vector3):
