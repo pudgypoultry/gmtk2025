@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bju0nbj7k6ovq" path="res://Scenes/ico_layer_04.tscn" id="6_ikia7"]
 [ext_resource type="PackedScene" uid="uid://drclv0roa88dj" path="res://Scenes/ico_shell.tscn" id="7_k7acu"]
 [ext_resource type="PackedScene" uid="uid://dd1thh4346sxi" path="res://CharacterController.tscn" id="7_o06y3"]
+[ext_resource type="PackedScene" uid="uid://d0s35icbe05hh" path="res://Scenes/eye_minion.tscn" id="8_k7acu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o06y3"]
 sky_top_color = Color(0.0842139, 0.109491, 0.144642, 1)
@@ -22,6 +23,7 @@ sky_material = SubResource("ProceduralSkyMaterial_o06y3")
 background_mode = 2
 background_color = Color(0.427493, 0.427493, 0.427493, 1)
 sky = SubResource("Sky_k7acu")
+fog_light_color = Color(0.116659, 0.130722, 0.15283, 1)
 
 [node name="World" type="Node3D" node_paths=PackedStringArray("player_node", "pillar_set_L1", "pillar_set_L2", "pillar_set_L3", "pillar_set_L4", "shell_node", "shell_detection_ray", "player_detection_ray")]
 script = ExtResource("1_o06y3")
@@ -55,7 +57,7 @@ collision_mask = 2048
 hit_back_faces = false
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("7_o06y3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.057, 0, -0.479799)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 15)
 rotationSpeed = 10.0
 verticalCameraClamp = 85.0
 rotationCheckTolerance = 0.01
@@ -76,5 +78,7 @@ omni_attenuation = 2.0
 environment = SubResource("Environment_o06y3")
 
 [node name="Ico_Shell" parent="." instance=ExtResource("7_k7acu")]
+
+[node name="EyeMinion_Actor" parent="." instance=ExtResource("8_k7acu")]
 
 [editable path="CharacterBody3D"]

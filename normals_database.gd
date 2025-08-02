@@ -23,13 +23,9 @@ func _ready() -> void:
 
 func TryAddNormal(ray:Vector3) -> void:
 	# check the physics process directly for the temporary raycast
-	var space_state = get_world_3d().direct_space_state
-	# check from the origin in the direction of -shell_normal
-	var query = PhysicsRayQueryParameters3D.create(Vector3.ZERO, ray * 50)
 	# set layer mask layer to 12 which is the shell
-	query.set_collision_mask(pow(2, 12-1))
 	# activate the ray cast
-	var result = space_state.intersect_ray(query)
+	var result = PhysicsProcessRaycast(Vector3.ZERO, ray * 50, pow(2, 12-1))
 	if result:
 		#print("Normal: ", result.normal)
 		# return pillar matching set
@@ -38,7 +34,15 @@ func TryAddNormal(ray:Vector3) -> void:
 			pass
 		else:
 			normals_database[key] = result.normal
-
-
+			
+func PhysicsProcessRaycast(from:Vector3, to:Vector3, collistion_mask:int) -> Dictionary:
+	# check the physics process directly for the temporary raycast
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	# set layer mask
+	query.set_collision_mask(collistion_mask)
+	# activate the ray cast
+	return space_state.intersect_ray(query)
+	
 func NormalToKey(normal:Vector3) -> String:
 	return "%.2f|%.2f|%.2f" % [normal.x, normal.y, normal.z]
