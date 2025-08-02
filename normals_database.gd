@@ -20,6 +20,7 @@ func _ready() -> void:
 		phi += radien_step
 	print("Added %d normal values" % normals_database.size())
 
+
 func TryAddNormal(ray:Vector3) -> void:
 	# check the physics process directly for the temporary raycast
 	var space_state = get_world_3d().direct_space_state
@@ -37,6 +38,7 @@ func TryAddNormal(ray:Vector3) -> void:
 			pass
 		else:
 			normals_database[key] = result.normal
-	
+
+
 func NormalToKey(normal:Vector3) -> String:
-	return "%.1f|%.1f|%.1f" % [normal.x, normal.y, normal.z]
+	return "%.2f|%.2f|%.2f" % [normal.x, normal.y, normal.z]

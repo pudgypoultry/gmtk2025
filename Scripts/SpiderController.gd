@@ -8,7 +8,9 @@ extends CharacterBody3D
 @export var maxTileLineLength : int = 10
 @export var tileCheckTolerance : float = 0.05
 @export var rotationCheckTolerance : float = 0.05
-@export var rotationCheckInterval : float = 0.005
+@export var rotationCheckInterval : float = 0.01
+@export var dotDifferenceTolerance : float = 0.02
+@export var cooldownAmount : float = 0.5
 
 
 @export_category("Plugging in Nodes")
@@ -18,6 +20,7 @@ extends CharacterBody3D
 @export var rayFolder : Node3D
 @export var normalCheckray : RayCast3D
 @export var debugShape : MeshInstance3D
+var debugArray = []
 
 var worldReference
 var gravity := Vector3(0,-3,0)
@@ -38,7 +41,10 @@ var visitedTileNormals : Array = []
 var checkingForNewTile : bool = false
 var onDifferentTile : bool = true
 var isRotating : bool = false
+var isOnCooldown : bool = false
+var cooldownTimer : float = 0.0
 var currentLevel : int = 1
+var lastTileNormal : Vector3 = Vector3.UP
 
 
 func _ready() -> void:
@@ -113,7 +119,7 @@ func _physics_process(delta: float) -> void:
 		else: 
 			isRotating = true
 		lastUpDirection = up_direction
-		print(isRotating)
+		# print(isRotating)
 	OrientCharacterToDirection(up_direction, delta)
 	velocity = speed * get_dir()
 	checkRays()
@@ -123,28 +129,41 @@ func _physics_process(delta: float) -> void:
 	elif is_on_floor():
 		jumpVectors = Vector3.ZERO
 	velocity += jumpVectors
-	ManagevisitedTileNormals(delta)
+	ManageVisitedTileNormals(delta)
 	up_direction = avgNormal.normalized()
 	move_and_slide()
 
 
-func ManagevisitedTileNormals(delta):
-	var newTileFound = false
+func NormalToKey(normal):
+	return NormalsDatabase.NormalToKey(normal)
+
+func NormalDatabaseKeys():
+	return NormalsDatabase.normals_database.keys()
+
+
+func ManageVisitedTileNormals(delta):
+	if isOnCooldown:
+		cooldownTimer += delta
+		if cooldownTimer > cooldownAmount:
+			cooldownTimer = 0
+			isOnCooldown = false
 	
 	# if our up_direction changed, we're potentially on a new tile
-	if !isRotating && onDifferentTile:
+	if !isRotating && onDifferentTile && !isOnCooldown:
 		checkingForNewTile = true
-		onDifferentTile = false
 	
 	# if current tile is the same as last we checked and we are in the state of checking to see that we're on a new tile
 	if checkingForNewTile and lastUpDirection == up_direction:
 		# need to see if we've been on the same up_direction for some amount of time
 		tileCheckTimer += delta
 		if tileCheckTimer > tileCheckTolerance && !isRotating:
-			newTileFound = true
 			tileCheckTimer = 0
+			var currentNormal = normalCheckray.get_collision_normal()
+			var currentKey = NormalToKey(currentNormal)
+			if currentKey in NormalDatabaseKeys() && currentNormal != lastTileNormal:
+				onDifferentTile = true
 	
-	if newTileFound:
+	if onDifferentTile && !isOnCooldown:
 		if normalCheckray.is_colliding():
 			SteppedOnNewTile(normalCheckray.get_collision_normal())
 
@@ -156,23 +175,28 @@ func SteppedOnNewTile(tileNormal : Vector3):
 	# First, check that that tile is not in the array already
 	#	If it is, initiate check for successful loop
 	#	Otherwise, light it up and keep going
-	if normalCheckray.is_colliding():
+	checkingForNewTile = false
+	if normalCheckray.is_colliding() :
 		var currentNormal = normalCheckray.get_collision_normal()
-		var currentKey = NormalsDatabase.NormalToKey(currentNormal)
-		if currentKey in NormalsDatabase.normals_database.keys():
+		var currentKey = NormalToKey(currentNormal)
+		if currentKey in NormalDatabaseKeys():
 			var newTile = NormalsDatabase.normals_database[currentKey]
-			if newTile in visitedTileNormals and newTile != visitedTileNormals[len(visitedTileNormals)-1]:
+			if newTile in visitedTileNormals and newTile != visitedTileNormals[len(visitedTileNormals)-1] and len(visitedTileNormals) > 2:
 				CheckForTileLoop()
 			elif newTile not in visitedTileNormals:
-				print("Added " + str(newTile) + " to visited tiles!")
+				# print("Added " + str(newTile) + " to visited tiles!")
 				visitedTileNormals.append(newTile)
 				var newDebugCheck = debugShape.duplicate()
 				get_parent().add_child(newDebugCheck)
 				newDebugCheck.position = global_position
-	onDifferentTile = true
+				debugArray.append(newDebugCheck)
+				print(visitedTileNormals)
+			onDifferentTile = true
+			lastTileNormal = newTile
 
 
 func CheckForTileLoop():
+	isOnCooldown = true
 	# Make sure there are at least 3 tiles, otherwise it's just doubling back and you know whatever
 	# Get average normal 
 	print("Starting tile loop check")
@@ -191,16 +215,25 @@ func CheckForTileLoop():
 	for tile in visitedTileNormals:
 		var currentDot = average.dot(tile)
 		if 1 - currentDot < minDotProductDifference:
-			minDotProductDifference = currentDot
-	for tile in NormalsDatabase.normals_database.values():
-		if 1 - average.dot(tile) < minDotProductDifference and tile not in visitedTileNormals:
-			ActivateTile(tile)
+			minDotProductDifference = 1 - currentDot
+	print("Minimum diff: " + str(minDotProductDifference))
+	ActivateTiles(average, minDotProductDifference)
 	visitedTileNormals.clear()
+	for i in range(len(debugArray)):
+		debugArray.pop_front().queue_free()
+		await get_tree().create_timer(0.2).timeout
 
+func ActivateTiles(average : Vector3, minDotProductDifference : float):
+	for tile in NormalsDatabase.normals_database.values():
+		var currentDot = average.dot(tile)
+		# print("Current diff: " + str(1 - currentDot))
+		if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
+			ActivateTile(tile)
+			await get_tree().create_timer(1).timeout
 
 func ActivateTile(tile : Vector3):
-	print("Activating: " + str(tile))
-	worldReference.ActivatePillar
+	print("Trying to activate: " + str(NormalToKey(tile)) + " : " + str(NormalsDatabase.normals_database[NormalToKey(tile)]))
+	worldReference.ActivatePillarByNormal(NormalsDatabase.normals_database[NormalToKey(tile)], currentLevel)
 
 
 func get_dir() -> Vector3:

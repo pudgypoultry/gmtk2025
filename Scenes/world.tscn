@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://dr66k8ebq4ha2"]
+[gd_scene load_steps=12 format=3 uid="uid://dr66k8ebq4ha2"]
 
 [ext_resource type="Script" uid="uid://c8v3kuq0dhg26" path="res://Scenes/pillar_control.gd" id="1_o06y3"]
+[ext_resource type="PackedScene" uid="uid://ba07esqafqwyi" path="res://Sandboxes/Andrew/TestBall.tscn" id="2_k7acu"]
 [ext_resource type="PackedScene" uid="uid://svjf1k8bhx3" path="res://Scenes/ico_layer_01.tscn" id="3_k7acu"]
 [ext_resource type="PackedScene" uid="uid://o1he5ion8kok" path="res://Scenes/ico_layer_02.tscn" id="4_5v1tr"]
 [ext_resource type="PackedScene" uid="uid://11mm2c37qj45" path="res://Scenes/ico_layer_03.tscn" id="5_0fj1v"]
@@ -32,6 +33,7 @@ pillar_set_L4 = NodePath("Ico_Layer_04")
 shell_node = NodePath("Ico_Shell")
 shell_detection_ray = NodePath("CharacterBody3D/Head/Camera3D/TargetRay")
 player_detection_ray = NodePath("PlayerDetectionRay")
+debugBall = ExtResource("2_k7acu")
 
 [node name="Ico_Layer_01" parent="." instance=ExtResource("3_k7acu")]
 inactive_distance = 10.0
@@ -53,6 +55,7 @@ collision_mask = 2048
 hit_back_faces = false
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("7_o06y3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.057, 0, -0.479799)
 rotationSpeed = 10.0
 verticalCameraClamp = 85.0
 rotationCheckTolerance = 0.01

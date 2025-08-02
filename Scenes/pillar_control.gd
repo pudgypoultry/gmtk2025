@@ -8,12 +8,7 @@ extends Node3D
 @export var shell_node:Node3D
 @export var shell_detection_ray:RayCast3D
 @export var player_detection_ray:RayCast3D
-
-var pillar_sets = [pillar_set_L1, pillar_set_L2, pillar_set_L3, pillar_set_L4]
-
-
-func _process(delta) -> void:
-	player_detection_ray.target_position = player_node.global_position * 2
+@export var debugBall : PackedScene
 
 
 func _input(event) -> void:
@@ -55,23 +50,14 @@ func FindNearestPillar(pillar_set) -> Node3D:
 	return target
 
 
-func FindNearestPillarToPostion(set_number : int, pos : Vector3) -> Node3D:
-	var min_pos:float = 10000000
-	var target:Node3D
-	for pillar in pillar_sets[set_number - 1].get_child(0).get_children():
-		var dis:float = (pillar.position - pos).length_squared()
-		if dis < min_pos:
-			min_pos = dis
-			target = pillar
-	print("found target: " + target.name)
-	return target
-
-
-func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, layer_int:int=12) -> Node3D:
+func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, debug : bool = false, layer_int:int=12) -> Node3D:
 	var shell_normal:Vector3
 	# look for the shell in raycast
 	if ray.is_colliding():
 		var obj = ray.get_collider()
+		var debugVisual = debugBall.instantiate()
+		get_tree().root.add_child(debugVisual)
+		debugVisual.position = ray.get_collision_point()
 		# check if shell has been found
 		#print("Raycast Shell Find: " + obj.get_parent().name)
 		if obj.get_parent().name == shell_node.get_child(0).get_child(0).name:
@@ -95,4 +81,19 @@ func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, layer_int:int=12) ->
 
 
 func ActivatePillar(pillar : Node3D, layer : int) -> void:
-		pillar_sets[layer - 1].MoveRadially(pillar)
+	match layer:
+		1:
+			pillar_set_L1.MoveRadially(pillar)
+		2:
+			pillar_set_L2.MoveRadially(pillar)
+		3:
+			pillar_set_L3.MoveRadially(pillar)
+		4:
+			pillar_set_L4.MoveRadially(pillar)
+
+
+func ActivatePillarByNormal(normal : Vector3, layer : int) -> void:
+	player_detection_ray.target_position = -normal*100
+	if FindTargetPillarByLayer(player_detection_ray, layer) != null:
+		var obj = FindTargetPillarByLayer(player_detection_ray, layer, true)
+		ActivatePillar(obj, layer)
