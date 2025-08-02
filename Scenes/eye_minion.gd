@@ -1,5 +1,6 @@
 extends Node3D
 @export var eye_minion_mesh:Node3D
+@export var player:CharacterBody3D
 var eye_minion_anim: AnimationPlayer
 @onready var movement_manager: MovementManager = $MovementManager
 var collision_mask:int = pow(2, 12-1)

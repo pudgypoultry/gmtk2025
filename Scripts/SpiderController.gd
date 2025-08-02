@@ -204,9 +204,13 @@ func SteppedOnNewTile(tileNormal : Vector3):
 				get_parent().add_child(newLightUp)
 				# TODO: tilePosition = use find nearest pillar to get the middle point of the tile 
 				newLightUp.position = NormalsDatabase.positions_database[currentKey]
-				newLightUp.basis = basis
-				newLightUp.rotate_x(deg_to_rad(90))
-				newLightUp.position += newLightUp.basis.y
+				#newLightUp.rotate_x(deg_to_rad(90))
+				newLightUp.basis = Basis(
+					-self.basis.z.cross(NormalsDatabase.normals_database[currentKey]),
+					NormalsDatabase.normals_database[currentKey], 
+					self.basis.z
+				).orthonormalized()
+				#newLightUp.position += newLightUp.basis.y
 				debugArray.append(newLightUp)
 				#print(visitedTileNormals)
 			onDifferentTile = true

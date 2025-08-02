@@ -1,21 +1,34 @@
 extends State
 @onready var movement_manager: MovementManager = $"../../MovementManager"
 @export var stuck: State
+@export var hunting: State
+@export var hunting_rays: Node3D
 var is_moving:bool = false
-
+var found_path:bool = false
+var path_id:String
 
 func Enter(old_state:State) -> void:
 	super(old_state)
+	path_id = ""
 	
 func Exit(new_state:State) -> void:
 	super(new_state)
+	found_path = false
 	
 func Update(_delta) -> void:
 	super(_delta)
+	for ray in hunting_rays.get_children():
+		if ray is RayCast3D and ray.is_colliding():
+			# path found
+			path_id = NormalsDatabase.PositionToKey(ray.get_collider().get_parent().position)
+			found_path = true
+	
 
 func Physics_Update(_delta) -> void:
 	super(_delta)
 	if not is_moving:
+		if found_path:
+			hunting.Enter(self)
 		var tile_id:String
 		# find next tile to move to
 		for i in movement_manager.ray_list.size():

@@ -1,9 +1,9 @@
 extends Node3D
 
-var normals_database:Dictionary
+var normals_database:Dictionary[String, Vector3]
 # Keys are strings - id of tile (normal to 1 decimal place)
 # Values are Vector3 - normal of tile
-var positions_database:Dictionary
+var positions_database:Dictionary[String, Vector3]
 var adjacencies_database:Dictionary
 # Keys are strings - id of tile
 # Values are Vector3 - position of tile center
@@ -41,7 +41,7 @@ func TryAddNormal(ray:Vector3) -> void:
 		#print("Normal: ", result.normal)
 		# return pillar matching set
 		var key:String = NormalToKey(result.normal)
-		if normals_database.find_key(key):
+		if key in normals_database:
 			pass
 		else:
 			normals_database[key] = result.normal
@@ -59,6 +59,11 @@ func PhysicsProcessRaycast(from:Vector3, to:Vector3, collistion_mask:int) -> Dic
 func NormalToKey(normal:Vector3) -> String:
 	return "%.2f|%.2f|%.2f" % [normal.x, normal.y, normal.z]
 
+func PositionToKey(position:Vector3) -> String:
+	for key in positions_database.keys():
+		if position.dot(positions_database[key]) > 0.99:
+			return key
+	return ""
 
 func FloodArea(key : String, visitedList : Array, numSteps : int, trackingDict : Dictionary = {}):
 	# Terminal Step

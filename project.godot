@@ -85,6 +85,7 @@ Grapple={
 
 [layer_names]
 
+3d_physics/layer_9="Path"
 3d_physics/layer_12="Shell"
 3d_physics/layer_13="Pillars1"
 3d_physics/layer_14="Pillars2"
