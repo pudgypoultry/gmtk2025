@@ -4,6 +4,7 @@ var normals_database:Dictionary
 # Keys are strings - id of tile (normal to 1 decimal place)
 # Values are Vector3 - normal of tile
 var positions_database:Dictionary
+var adjacencies_database:Dictionary
 # Keys are strings - id of tile
 # Values are Vector3 - position of tile center
 @export var radien_step:float = PI / 30
@@ -52,6 +53,12 @@ func PhysicsProcessRaycast(from:Vector3, to:Vector3, collistion_mask:int) -> Dic
 	query.set_collision_mask(collistion_mask)
 	# activate the ray cast
 	return space_state.intersect_ray(query)
-	
+
+
 func NormalToKey(normal:Vector3) -> String:
 	return "%.2f|%.2f|%.2f" % [normal.x, normal.y, normal.z]
+
+
+func FloodArea(key : String) -> Array[String]:
+	
+	return ["hi"]

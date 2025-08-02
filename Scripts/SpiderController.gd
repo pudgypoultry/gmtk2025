@@ -11,6 +11,7 @@ extends CharacterBody3D
 @export var rotationCheckInterval : float = 0.01
 @export var dotDifferenceTolerance : float = 0.02
 @export var cooldownAmount : float = 0.5
+@export var planeIntersectionTolerance : float = 0.01
 
 
 @export_category("Plugging in Nodes")
@@ -38,6 +39,7 @@ var currentTarget : Node3D = null
 var mouseSensMulti := 1
 var tempDict : Dictionary = {}
 var visitedTileNormals : Array = []
+var visitedTilePositions : Array = []
 var checkingForNewTile : bool = false
 var onDifferentTile : bool = true
 var isRotating : bool = false
@@ -188,10 +190,11 @@ func SteppedOnNewTile(tileNormal : Vector3):
 			elif newTile not in visitedTileNormals:
 				# print("Added " + str(newTile) + " to visited tiles!")
 				visitedTileNormals.append(newTile)
+				visitedTilePositions.append(NormalsDatabase.positions_database[currentKey])
 				var newLightUp = tileLightUp.instantiate()
 				get_parent().add_child(newLightUp)
 				# TODO: tilePosition = use find nearest pillar to get the middle point of the tile 
-				newLightUp.position = normalCheckray.get_collision_point()
+				newLightUp.position = NormalsDatabase.positions_database[currentKey]
 				newLightUp.basis = basis
 				newLightUp.rotate_x(deg_to_rad(90))
 				newLightUp.position += newLightUp.basis.y
@@ -237,11 +240,33 @@ func CheckForTileLoop(repeatedTile):
 		# await get_tree().create_timer(0.2).timeout
 
 
+func CheckForTilesInLoop():
+	var planeArray = []
+	var foundTiles = []
+	for i in range(len(visitedTilePositions) - 1):
+		for j in range(len(visitedTilePositions.slice(i+1)) - 1):
+			pass
+			# create plane from visitedTilePositions[i] to visitedTilePositions[j]
+			var currentPlane = Plane(visitedTilePositions[i], visitedTilePositions[j], visitedTilePositions[i] + Vector3.UP)
+			planeArray.append(currentPlane)
+	for i in range(len(planeArray) - 1):
+		for j in range(len(planeArray.slice(i+1)) - 1):
+			pass
+			# check if plane[i] and plane[j] intersect at a right angle
+			if planeArray[i].dot(planeArray[j]) < planeIntersectionTolerance:
+				pass
+			# if so, add to the found tiles any tile that the planes both overlap
+			#	as long as that tile is not in visitedTiles and isn't already in the list
+			#	also potentially check if tile is "near" to the other two tiles to avoid hitting ceiling
+
+
+
 func ActivateTiles(average : Vector3, minDotProductDifference : float):
 	for tile in NormalsDatabase.normals_database.values():
 		var currentDot = average.dot(tile)
 		# print("Current diff: " + str(1 - currentDot))
-		if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
+		#if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
+		if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals:
 			ActivateTile(tile)
 			await get_tree().create_timer(0.2).timeout
 
