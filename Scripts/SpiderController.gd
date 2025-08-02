@@ -19,7 +19,7 @@ extends CharacterBody3D
 @export var camTarget : Node3D
 @export var rayFolder : Node3D
 @export var normalCheckray : RayCast3D
-@export var debugShape : MeshInstance3D
+@export var tileLightUp : PackedScene
 var debugArray = []
 
 var worldReference
@@ -186,11 +186,14 @@ func SteppedOnNewTile(tileNormal : Vector3):
 			elif newTile not in visitedTileNormals:
 				# print("Added " + str(newTile) + " to visited tiles!")
 				visitedTileNormals.append(newTile)
-				var newDebugCheck = debugShape.duplicate()
-				get_parent().add_child(newDebugCheck)
-				newDebugCheck.basis = basis
-				newDebugCheck.position = global_position
-				debugArray.append(newDebugCheck)
+				var newLightUp = tileLightUp.instantiate()
+				get_parent().add_child(newLightUp)
+				# TODO: tilePosition = use find nearest pillar to get the middle point of the tile 
+				newLightUp.position = normalCheckray.get_collision_point()
+				newLightUp.basis = basis
+				newLightUp.rotate_x(deg_to_rad(90))
+				newLightUp.position += newLightUp.basis.y
+				debugArray.append(newLightUp)
 				print(visitedTileNormals)
 			onDifferentTile = true
 			lastTileNormal = newTile

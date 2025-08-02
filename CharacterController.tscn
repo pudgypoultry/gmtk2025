@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dd1thh4346sxi"]
+[gd_scene load_steps=7 format=3 uid="uid://dd1thh4346sxi"]
 
 [ext_resource type="Script" uid="uid://7y87kc0aoch8" path="res://Scripts/SpiderController.gd" id="1_wubm4"]
+[ext_resource type="PackedScene" uid="uid://b71qsbqcxxpvy" path="res://Sandboxes/Andrew/SteppedOnTileMesh.tscn" id="2_v6m8r"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_l0jw5"]
 
@@ -15,7 +16,7 @@ top_radius = 0.1
 bottom_radius = 0.3
 height = 0.1
 
-[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray", "debugShape")]
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray")]
 script = ExtResource("1_wubm4")
 speed = 10.0
 runSpeed = 20.0
@@ -24,7 +25,7 @@ camera = NodePath("Head/Camera3D")
 camTarget = NodePath("Head/Camera3D/CamTarget")
 rayFolder = NodePath("RayFolder")
 normalCheckray = NodePath("GroundNormalCheck")
-debugShape = NodePath("MeshInstance3D")
+tileLightUp = ExtResource("2_v6m8r")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_l0jw5")
