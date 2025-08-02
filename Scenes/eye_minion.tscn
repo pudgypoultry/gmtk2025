@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://d0s35icbe05hh"]
 
-[ext_resource type="PackedScene" uid="uid://ham0jv6trpqv" path="res://Assets/EyeMinion.glb" id="1_7wueb"]
+[ext_resource type="PackedScene" uid="uid://u2nk4w80i38i" path="res://Assets/EyeMinion.glb" id="1_7wueb"]
 [ext_resource type="Script" uid="uid://b0be2rkivpex3" path="res://Scenes/eye_minion.gd" id="1_bh5t3"]
 [ext_resource type="Script" uid="uid://7g1a6d6qtery" path="res://Scenes/state_manager.gd" id="3_n4b0p"]
 [ext_resource type="Script" uid="uid://bcnysqfv7chmy" path="res://Scenes/StateMachine/patrolling.gd" id="4_eqsn6"]
@@ -21,8 +21,35 @@ shape = SubResource("SphereShape3D_5qe4p")
 [node name="EyeMinion" parent="." instance=ExtResource("1_7wueb")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 
-[node name="RotationRay" type="RayCast3D" parent="."]
+[node name="RotationRays" type="Node3D" parent="."]
+
+[node name="Down" type="RayCast3D" parent="RotationRays"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+target_position = Vector3(0, -30, 0)
+collision_mask = 63488
+
+[node name="Up" type="RayCast3D" parent="RotationRays"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 2, 0)
+target_position = Vector3(0, -30, 0)
+collision_mask = 63488
+
+[node name="Front" type="RayCast3D" parent="RotationRays"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 2, 0)
+target_position = Vector3(0, -30, 0)
+collision_mask = 63488
+
+[node name="Left" type="RayCast3D" parent="RotationRays"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 2, 0)
+target_position = Vector3(0, -30, 0)
+collision_mask = 63488
+
+[node name="Back" type="RayCast3D" parent="RotationRays"]
+transform = Transform3D(-1, -8.74228e-08, 3.82137e-15, 0, -4.37114e-08, -1, 8.74228e-08, -1, 4.37114e-08, 0, 2, 0)
+target_position = Vector3(0, -30, 0)
+collision_mask = 63488
+
+[node name="Right" type="RayCast3D" parent="RotationRays"]
+transform = Transform3D(1.31134e-07, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, 1.31134e-07, -5.73206e-15, 0, 2, 0)
 target_position = Vector3(0, -30, 0)
 collision_mask = 63488
 
@@ -82,11 +109,11 @@ script = ExtResource("5_bq01v")
 patrolling = NodePath("../Patrolling")
 fly_time = 0.5
 
-[node name="MovementManager" type="Node" parent="." node_paths=PackedStringArray("nav_rays", "eye_minion", "rotation_ray")]
+[node name="MovementManager" type="Node" parent="." node_paths=PackedStringArray("nav_rays", "eye_minion", "rotation_rays")]
 script = ExtResource("5_5qe4p")
 nav_rays = NodePath("../NavRays")
 eye_minion = NodePath("..")
-rotation_ray = NodePath("../RotationRay")
+rotation_rays = NodePath("../RotationRays")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.99863, 0.052336, 0, -0.052336, 0.99863, 0, 2.11855, -1.29694)

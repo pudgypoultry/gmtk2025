@@ -4,7 +4,7 @@ class_name MovementManager
 @export var nav_rays: Node3D
 @export var eye_minion: Node3D
 @export var move_time:float = 2.0
-@export var rotation_ray: RayCast3D
+@export var rotation_rays: Node3D
 
 var ray_counter = 0
 var ray_list = []
@@ -38,11 +38,15 @@ func TryGetTile(ray:RayCast3D) -> String:
 	return ""
 
 func RotateToFloor(delta:float, rotationSpeed:float=1.0) -> void:
-	if rotation_ray.is_colliding():
-		var target_up : Vector3 = rotation_ray.get_collision_normal()
-		var rightAxis : Vector3 = -backAxis.cross(target_up)
-		var rotationBasis := Basis(rightAxis, target_up, backAxis).orthonormalized()
-		eye_minion.basis = eye_minion.basis.get_rotation_quaternion().slerp(rotationBasis, delta * rotationSpeed)
+	for ray in rotation_rays.get_children():
+		if ray is RayCast3D and ray.is_colliding():
+			var target_up : Vector3 = ray.get_collision_normal()
+			var rightAxis : Vector3 = -backAxis.cross(target_up)
+			var rotationBasis := Basis(rightAxis, target_up, backAxis).orthonormalized()
+			eye_minion.basis = eye_minion.basis.get_rotation_quaternion().slerp(
+				rotationBasis,
+				delta * rotationSpeed)
+			return
 	
 # Casts a ray from the origin to the shell or pillars and 
 # tweens the Eye’s position from where it is, to the ray's intersection point.
