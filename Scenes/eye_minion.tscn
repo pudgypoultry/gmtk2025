@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://d0s35icbe05hh"]
+[gd_scene load_steps=8 format=3 uid="uid://d0s35icbe05hh"]
 
 [ext_resource type="PackedScene" uid="uid://ham0jv6trpqv" path="res://Assets/EyeMinion.glb" id="1_7wueb"]
 [ext_resource type="Script" uid="uid://b0be2rkivpex3" path="res://Scenes/eye_minion.gd" id="1_bh5t3"]
 [ext_resource type="Script" uid="uid://7g1a6d6qtery" path="res://Scenes/state_manager.gd" id="3_n4b0p"]
 [ext_resource type="Script" uid="uid://bcnysqfv7chmy" path="res://Scenes/StateMachine/patrolling.gd" id="4_eqsn6"]
 [ext_resource type="Script" uid="uid://c3naepgd27ng3" path="res://Scenes/movement_manager.gd" id="5_5qe4p"]
+[ext_resource type="Script" uid="uid://biar0mqe8ur40" path="res://Scenes/StateMachine/stuck.gd" id="5_bq01v"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_5qe4p"]
 radius = 1.0
@@ -72,8 +73,14 @@ collision_mask = 63488
 script = ExtResource("3_n4b0p")
 initial_state = NodePath("Patrolling")
 
-[node name="Patrolling" type="Node" parent="StateManager"]
+[node name="Patrolling" type="Node" parent="StateManager" node_paths=PackedStringArray("stuck")]
 script = ExtResource("4_eqsn6")
+stuck = NodePath("../Stuck")
+
+[node name="Stuck" type="Node" parent="StateManager" node_paths=PackedStringArray("patrolling")]
+script = ExtResource("5_bq01v")
+patrolling = NodePath("../Patrolling")
+fly_time = 0.5
 
 [node name="MovementManager" type="Node" parent="." node_paths=PackedStringArray("nav_rays", "eye_minion", "rotation_ray")]
 script = ExtResource("5_5qe4p")

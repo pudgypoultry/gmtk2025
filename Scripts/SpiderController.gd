@@ -196,7 +196,7 @@ func SteppedOnNewTile(tileNormal : Vector3):
 				newLightUp.rotate_x(deg_to_rad(90))
 				newLightUp.position += newLightUp.basis.y
 				debugArray.append(newLightUp)
-				print(visitedTileNormals)
+				#print(visitedTileNormals)
 			onDifferentTile = true
 			lastTileNormal = newTile
 

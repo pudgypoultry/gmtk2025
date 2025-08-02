@@ -53,6 +53,7 @@ func MoveToTile(tile_id:String) -> void:
 	# set mask to shell + layers 1-4
 	var collision_mask = pow(2, 12-1) + pow(2, 13-1)+ pow(2, 14-1)+ pow(2, 15-1)+ pow(2, 16-1)
 	# get target coordinates
+	# NOTE target may not be on the shell, can't use position database
 	var result = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, -tile_normal * 50, collision_mask)
 	if result:
 		var target_position:Vector3 = result.position
