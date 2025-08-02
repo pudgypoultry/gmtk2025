@@ -12,6 +12,8 @@ extends CharacterBody3D
 @export var dotDifferenceTolerance : float = 0.02
 @export var cooldownAmount : float = 0.5
 @export var planeIntersectionTolerance : float = 0.01
+@export var scorePerTile : int = 100
+@export var scoreLengthMultiplier : float = 1.1
 
 
 @export_category("Plugging in Nodes")
@@ -21,6 +23,8 @@ extends CharacterBody3D
 @export var rayFolder : Node3D
 @export var normalCheckray : RayCast3D
 @export var tileLightUp : PackedScene
+@export var scoreLabel : Label
+@export var timeLabel : Label
 var debugArray = []
 
 var worldReference
@@ -47,6 +51,7 @@ var isOnCooldown : bool = false
 var cooldownTimer : float = 0.0
 var currentLevel : int = 1
 var lastTileNormal : Vector3 = Vector3.UP
+var playerScore : int = 0
 
 
 func _ready() -> void:
@@ -186,7 +191,11 @@ func SteppedOnNewTile(tileNormal : Vector3):
 		if currentKey in NormalDatabaseKeys():
 			var newTile = NormalsDatabase.normals_database[currentKey]
 			if newTile in visitedTileNormals and newTile != visitedTileNormals[len(visitedTileNormals)-1] and len(visitedTileNormals) > 2:
-				CheckForTileLoop(newTile)
+				# CheckForTilesInLoop(newTile)
+				visitedTileNormals.clear()
+				visitedTilePositions.clear()
+				for i in range(len(debugArray)):
+					debugArray.pop_front().queue_free()
 			elif newTile not in visitedTileNormals:
 				# print("Added " + str(newTile) + " to visited tiles!")
 				visitedTileNormals.append(newTile)
@@ -204,8 +213,49 @@ func SteppedOnNewTile(tileNormal : Vector3):
 			lastTileNormal = newTile
 
 
-func CheckForTileLoop(repeatedTile):
+
+#func CheckForTileLoop(repeatedTile):
+	#isOnCooldown = true
+	## Make sure there are at least 3 tiles, otherwise it's just doubling back and you know whatever
+	## Get average normal 
+	#print("Starting tile loop check")
+	#var loopedTiles = []
+	#var atLooped = false
+	#for tile in visitedTileNormals:
+		#if tile == repeatedTile:
+			#atLooped = true
+		#if atLooped:
+			#loopedTiles.append(tile)
+	#var average = Vector3.ZERO
+	#var numNormals = 0
+	#for norm in loopedTiles:
+		#numNormals += 1
+		#average += norm
+	#if average:
+		#average /= numNormals
+		#average = average.normalized()
+#
+	## If any tile in the dict *and* that isn't in visitedTileNormals has a closer dot product to the avg normal than
+	## any tile in visitedTileNormals, we know it's been looped
+	#var minDotProductDifference = 1
+	#for tile in loopedTiles:
+		#var currentDot = average.dot(tile)
+		#if 1 - currentDot < minDotProductDifference:
+			#minDotProductDifference = 1 - currentDot
+	#print("Minimum diff: " + str(minDotProductDifference))
+	#ActivateTiles(average, minDotProductDifference)
+	#visitedTileNormals.clear()
+	#visitedTilePositions.clear()
+	#for i in range(len(debugArray)):
+		#debugArray.pop_front().queue_free()
+		## await get_tree().create_timer(0.2).timeout
+
+
+func CheckForTilesInLoop(repeatedTile):
 	isOnCooldown = true
+	var checkingArrays = []
+	var correctArray = []
+	var foundInside = false
 	# Make sure there are at least 3 tiles, otherwise it's just doubling back and you know whatever
 	# Get average normal 
 	print("Starting tile loop check")
@@ -216,59 +266,38 @@ func CheckForTileLoop(repeatedTile):
 			atLooped = true
 		if atLooped:
 			loopedTiles.append(tile)
-	var average = Vector3.ZERO
-	var numNormals = 0
-	for norm in loopedTiles:
-		numNormals += 1
-		average += norm
-	if average:
-		average /= numNormals
-		average = average.normalized()
-
-	# If any tile in the dict *and* that isn't in visitedTileNormals has a closer dot product to the avg normal than
-	# any tile in visitedTileNormals, we know it's been looped
-	var minDotProductDifference = 1
 	for tile in loopedTiles:
-		var currentDot = average.dot(tile)
-		if 1 - currentDot < minDotProductDifference:
-			minDotProductDifference = 1 - currentDot
-	print("Minimum diff: " + str(minDotProductDifference))
-	ActivateTiles(average, minDotProductDifference)
-	visitedTileNormals.clear()
-	for i in range(len(debugArray)):
-		debugArray.pop_front().queue_free()
-		# await get_tree().create_timer(0.2).timeout
-
-
-func CheckForTilesInLoop():
-	var planeArray = []
-	var foundTiles = []
-	for i in range(len(visitedTilePositions) - 1):
-		for j in range(len(visitedTilePositions.slice(i+1)) - 1):
-			pass
-			# create plane from visitedTilePositions[i] to visitedTilePositions[j]
-			var currentPlane = Plane(visitedTilePositions[i], visitedTilePositions[j], visitedTilePositions[i] + Vector3.UP)
-			planeArray.append(currentPlane)
-	for i in range(len(planeArray) - 1):
-		for j in range(len(planeArray.slice(i+1)) - 1):
-			pass
-			# check if plane[i] and plane[j] intersect at a right angle
-			if planeArray[i].dot(planeArray[j]) < planeIntersectionTolerance:
-				pass
-			# if so, add to the found tiles any tile that the planes both overlap
-			#	as long as that tile is not in visitedTiles and isn't already in the list
-			#	also potentially check if tile is "near" to the other two tiles to avoid hitting ceiling
-
-
-
-func ActivateTiles(average : Vector3, minDotProductDifference : float):
-	for tile in NormalsDatabase.normals_database.values():
-		var currentDot = average.dot(tile)
-		# print("Current diff: " + str(1 - currentDot))
-		#if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
-		if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals:
+		var currentArray = NormalsDatabase.FloodArea(NormalToKey(tile), visitedTileNormals, 12).keys()
+		if len(checkingArrays) > 1:
+			for array in checkingArrays:
+				if currentArray == array:
+					foundInside = true
+					correctArray = currentArray
+					break
+		if foundInside:
+			break
+		checkingArrays.append(currentArray)
+	if len(correctArray) > 0:
+		for tile in correctArray:
 			ActivateTile(tile)
-			await get_tree().create_timer(0.2).timeout
+		IncreaseScore(len(correctArray))
+
+
+func IncreaseScore(numTiles):
+	playerScore += ceil((scorePerTile * numTiles) * pow(scoreLengthMultiplier, numTiles))
+
+
+func ResetScore():
+	playerScore = 0
+
+#func ActivateTiles(average : Vector3, minDotProductDifference : float):
+	#for tile in NormalsDatabase.normals_database.values():
+		#var currentDot = average.dot(tile)
+		## print("Current diff: " + str(1 - currentDot))
+		##if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
+		#if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals:
+			#ActivateTile(tile)
+			#await get_tree().create_timer(0.2).timeout
 
 
 func ActivateTile(tile : Vector3):

@@ -9,6 +9,7 @@ var adjacencies_database:Dictionary
 # Values are Vector3 - position of tile center
 @export var radien_step:float = PI / 30
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var pi_over_2:float = PI / 2
@@ -59,6 +60,20 @@ func NormalToKey(normal:Vector3) -> String:
 	return "%.2f|%.2f|%.2f" % [normal.x, normal.y, normal.z]
 
 
-func FloodArea(key : String) -> Array[String]:
-	
-	return ["hi"]
+func FloodArea(key : String, visitedList : Array, numSteps : int, trackingDict : Dictionary = {}):
+	# Terminal Step
+	print("Starting with: " + key)
+	var workingDict = trackingDict
+	if numSteps == 0:
+		print("	Found endpoint: " + key)
+		return {key : 1}
+	# Recursive Step
+	else:
+		for tile in adjacencies_database[key]:
+			if tile not in visitedList and tile not in workingDict.keys():
+				workingDict[tile] = 1
+				print("	Searching through: " + tile)
+				var newTiles = FloodArea(tile, visitedList, numSteps - 1, workingDict)
+				for adjacentTile in newTiles.keys():
+					workingDict[adjacentTile] = 1
+	return workingDict
