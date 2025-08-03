@@ -9,9 +9,11 @@
 [ext_resource type="Script" uid="uid://bfbexroli3iar" path="res://Scenes/hunting.gd" id="6_yba5y"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_5qe4p"]
-radius = 1.0
+radius = 2.37
 
 [node name="EyeMinion_Actor" type="StaticBody3D" node_paths=PackedStringArray("eye_minion_mesh")]
+collision_layer = 8
+collision_mask = 8
 script = ExtResource("1_bh5t3")
 eye_minion_mesh = NodePath("EyeMinion")
 
