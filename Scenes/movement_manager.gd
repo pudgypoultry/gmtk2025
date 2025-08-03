@@ -33,13 +33,13 @@ func TryGetTile(ray:RayCast3D) -> String:
 		if eye_minion.player.currentLevel - 1 == 0:
 			layer_name = "shell"
 		elif eye_minion.player.currentLevel - 1 == 0:
-			layer_name = "layer1"
+			layer_name = "1"
 		elif eye_minion.player.currentLevel - 1 == 0:
-			layer_name = "layer2"
+			layer_name = "2"
 		elif eye_minion.player.currentLevel - 1 == 0:
-			layer_name = "layer3"
+			layer_name = "3"
 		else:
-			layer_name = "layer4"
+			layer_name = "4"
 			
 		if ray.get_collider().get_parent().name.contains(layer_name):
 			# get the collision normal
@@ -55,6 +55,9 @@ func RotateToFloor(delta:float, rotationSpeed:float=1.0) -> void:
 		if ray is RayCast3D and ray.is_colliding():
 			var target_up : Vector3 = ray.get_collision_normal()
 			var rightAxis : Vector3 = -backAxis.cross(target_up)
+			if rightAxis == Vector3.ZERO or backAxis == Vector3.ZERO:
+				backAxis = Vector3.BACK
+				rightAxis = -backAxis.cross(target_up)
 			var rotationBasis := Basis(rightAxis, target_up, backAxis).orthonormalized()
 			#print(target_up, rightAxis, backAxis)
 			eye_minion.basis = eye_minion.basis.get_rotation_quaternion().slerp(

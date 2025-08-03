@@ -99,6 +99,46 @@ transform = Transform3D(0.699193, 0.105493, 0.707107, -0.14919, 0.988809, -1.462
 target_position = Vector3(15, 0, 0)
 collision_mask = 63488
 
+[node name="Front2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(0.856334, 0.129202, 0.5, -0.14919, 0.988809, -3.59835e-09, -0.494404, -0.074595, 0.866025, 0, 0.996861, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="RightFront2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(0.955115, 0.144106, -0.258819, -0.14919, 0.988809, -6.45239e-09, 0.255922, 0.0386131, 0.965926, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="Right2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(0.494405, 0.074595, -0.866025, -0.14919, 0.988809, -1.05367e-08, 0.856334, 0.129202, 0.5, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="RightBack2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-0.255922, -0.0386131, -0.965926, -0.14919, 0.988809, -2.10734e-08, 0.955115, 0.144106, -0.258819, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="Back2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-0.856334, -0.129202, -0.5, -0.14919, 0.988809, -1.38767e-08, 0.494405, 0.074595, -0.866025, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="LeftBack2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-0.955115, -0.144106, 0.258819, -0.14919, 0.988809, -1.63373e-08, -0.255922, -0.0386131, -0.965926, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="Left2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(-0.494404, -0.074595, 0.866025, -0.14919, 0.988809, -1.69583e-08, -0.856333, -0.129202, -0.5, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
+[node name="LeftFront2" type="RayCast3D" parent="NavRays"]
+transform = Transform3D(0.255922, 0.0386131, 0.965926, -0.14919, 0.988809, -2.35076e-08, -0.955115, -0.144106, 0.258819, 0, 0.782274, 0)
+target_position = Vector3(15, 0, 0)
+collision_mask = 63488
+
 [node name="StateManager" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("3_n4b0p")
 initial_state = NodePath("Patrolling")
