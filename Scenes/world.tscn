@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dr66k8ebq4ha2"]
+[gd_scene load_steps=14 format=3 uid="uid://dr66k8ebq4ha2"]
 
 [ext_resource type="Script" uid="uid://c8v3kuq0dhg26" path="res://Scenes/pillar_control.gd" id="1_o06y3"]
 [ext_resource type="PackedScene" uid="uid://ba07esqafqwyi" path="res://Sandboxes/Andrew/TestBall.tscn" id="2_k7acu"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://drclv0roa88dj" path="res://Scenes/ico_shell.tscn" id="7_k7acu"]
 [ext_resource type="PackedScene" uid="uid://dd1thh4346sxi" path="res://CharacterController.tscn" id="7_o06y3"]
 [ext_resource type="PackedScene" uid="uid://d0ma01gpfrsha" path="res://Scenes/TileHighlight.tscn" id="8_0fj1v"]
+[ext_resource type="PackedScene" uid="uid://d0s35icbe05hh" path="res://Scenes/eye_minion.tscn" id="10_0fj1v"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o06y3"]
 sky_top_color = Color(0.0842139, 0.109491, 0.144642, 1)
@@ -79,5 +80,7 @@ omni_attenuation = 2.0
 environment = SubResource("Environment_o06y3")
 
 [node name="Ico_Shell" parent="." instance=ExtResource("7_k7acu")]
+
+[node name="EyeMinion_Actor" parent="." instance=ExtResource("10_0fj1v")]
 
 [editable path="CharacterBody3D"]

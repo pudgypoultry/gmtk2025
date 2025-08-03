@@ -5,6 +5,7 @@ extends Node3D
 @export var icosphere_layer: Node3D
 @export var layer:int
 @export var animation_length:float = 2
+const SOUND_SOURCE = preload("res://Scenes/sound_source.tscn")
 
 enum pillar_state {IN, OUT, MOVING}
 
@@ -23,15 +24,21 @@ func _ready() -> void:
 		child.get_child(0).set_collision_layer_value(12 + layer, true)
 		MoveRadially(child, Vector3.ZERO, false)
 
+func SoundAtLocation(location:Vector3) -> void:
+	var source = SOUND_SOURCE.instantiate()
+	get_parent().add_child(source)
+	source.position = location
+	source.activate(animation_length)
+
 func MoveRadially(obj:Node3D, origin:Vector3=Vector3.ZERO, animate:bool=true) -> void:
 	# move the input obj along vector from origin point to the object's position
 	var direction:Vector3 = obj.position - origin
 	if true:
 		if pillars[obj.name].state == pillar_state.OUT:
 			if animate:
-				TweenTools.TweenPosition(obj, obj, 
-					obj.position - direction.normalized() * inactive_distance + origin,
-					animation_length)
+				var pos:Vector3 = obj.position - direction.normalized() * inactive_distance + origin
+				SoundAtLocation(pos)
+				TweenTools.TweenPosition(obj, obj, pos, animation_length)
 				pillars[obj.name].state = pillar_state.MOVING
 				await get_tree().create_timer(animation_length).timeout
 			else:
@@ -41,9 +48,9 @@ func MoveRadially(obj:Node3D, origin:Vector3=Vector3.ZERO, animate:bool=true) ->
 		
 		elif pillars[obj.name].state == pillar_state.IN:
 			if animate:
-				TweenTools.TweenPosition(obj, obj, 
-					obj.position + direction.normalized() * inactive_distance + origin,
-					animation_length)
+				var pos:Vector3 = obj.position + direction.normalized() * inactive_distance + origin
+				SoundAtLocation(pos)
+				TweenTools.TweenPosition(obj, obj, pos, animation_length)
 				pillars[obj.name].state = pillar_state.MOVING
 				await get_tree().create_timer(animation_length).timeout
 			else:
