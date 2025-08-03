@@ -55,9 +55,9 @@ func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, debug : bool = false
 	# look for the shell in raycast
 	if ray.is_colliding():
 		var obj = ray.get_collider()
-		var debugVisual = debugBall.instantiate()
-		get_tree().root.add_child(debugVisual)
-		debugVisual.position = ray.get_collision_point()
+		#var debugVisual = debugBall.instantiate()
+		#get_tree().root.add_child(debugVisual)
+		#debugVisual.position = ray.get_collision_point()
 		# check if shell has been found
 		#print("Raycast Shell Find: " + obj.get_parent().name)
 		if obj.get_parent().name == shell_node.get_child(0).get_child(0).name:
