@@ -10,6 +10,8 @@ var path_id:String
 func Enter(old_state:State) -> void:
 	super(old_state)
 	path_id = ""
+	found_path = false
+	is_moving = false
 	
 func Exit(new_state:State) -> void:
 	super(new_state)
@@ -19,10 +21,13 @@ func Exit(new_state:State) -> void:
 func Update(_delta) -> void:
 	super(_delta)
 	for ray in hunting_rays.get_children():
-		if ray is RayCast3D and ray.is_colliding():
+		if (ray is RayCast3D) and ray.is_colliding():
 			# path found
-			path_id = NormalsDatabase.PositionToKey(ray.get_collider().get_parent().position)
-			found_path = true
+			var tmp = ray.get_collider()
+			if tmp:
+				#print(tmp.name)
+				path_id = NormalsDatabase.PositionToKey(tmp.get_parent().position)
+				found_path = true
 	
 
 func Physics_Update(_delta) -> void:

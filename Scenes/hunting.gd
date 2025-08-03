@@ -11,9 +11,11 @@ func Enter(old_state:State) -> void:
 	super(old_state)
 	current_path_id = old_state.path_id
 	player = movement_manager.eye_minion.player
+	is_moving = false
 	
 func Exit(new_state:State) -> void:
 	super(new_state)
+	is_moving = false
 	
 func Update(_delta) -> void:
 	super(_delta)

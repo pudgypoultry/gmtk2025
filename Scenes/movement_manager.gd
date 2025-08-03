@@ -28,13 +28,26 @@ func GetNextRay() -> RayCast3D:
 # returns the key string of the tile normal (for use with normals database) or an empty string
 func TryGetTile(ray:RayCast3D) -> String:
 	# attmpts to find the tile pointed to by the input ray
-	if ray.is_colliding() && ray.get_collider().get_parent().name.contains("shell"):
-		# get the collision normal
-		var str:String = NormalsDatabase.NormalToKey(ray.get_collision_normal())
-		# check if normal is in the normals database
-		if str in NormalsDatabase.normals_database.keys():
-			# found normal
-			return str
+	if ray.is_colliding():
+		var layer_name:String
+		if eye_minion.player.currentLevel - 1 == 0:
+			layer_name = "shell"
+		elif eye_minion.player.currentLevel - 1 == 0:
+			layer_name = "layer1"
+		elif eye_minion.player.currentLevel - 1 == 0:
+			layer_name = "layer2"
+		elif eye_minion.player.currentLevel - 1 == 0:
+			layer_name = "layer3"
+		else:
+			layer_name = "layer4"
+			
+		if ray.get_collider().get_parent().name.contains(layer_name):
+			# get the collision normal
+			var str:String = NormalsDatabase.NormalToKey(ray.get_collision_normal())
+			# check if normal is in the normals database
+			if str in NormalsDatabase.normals_database.keys():
+				# found normal
+				return str
 	return ""
 
 func RotateToFloor(delta:float, rotationSpeed:float=1.0) -> void:
@@ -43,11 +56,11 @@ func RotateToFloor(delta:float, rotationSpeed:float=1.0) -> void:
 			var target_up : Vector3 = ray.get_collision_normal()
 			var rightAxis : Vector3 = -backAxis.cross(target_up)
 			var rotationBasis := Basis(rightAxis, target_up, backAxis).orthonormalized()
-			# print(target_up, rightAxis, backAxis)
+			#print(target_up, rightAxis, backAxis)
 			eye_minion.basis = eye_minion.basis.get_rotation_quaternion().slerp(
 				rotationBasis,
 				delta * rotationSpeed)
-			backAxis = eye_minion.basis.z
+			#backAxis = eye_minion.basis.z
 			return
 	
 # Casts a ray from the origin to the shell or pillars and 

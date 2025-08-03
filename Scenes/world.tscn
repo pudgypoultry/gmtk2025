@@ -89,5 +89,4 @@ environment = SubResource("Environment_o06y3")
 
 [node name="Ico_Shell" parent="." instance=ExtResource("7_k7acu")]
 
-[node name="EyeMinion_Actor" parent="." node_paths=PackedStringArray("player") instance=ExtResource("11_ikia7")]
-player = NodePath("../Player")
+[node name="EyeMinion_Actor" parent="." instance=ExtResource("11_ikia7")]

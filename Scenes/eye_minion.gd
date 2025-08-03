@@ -1,9 +1,9 @@
 extends Node3D
 @export var eye_minion_mesh:Node3D
-@export var player:CharacterBody3D
+var player:CharacterBody3D
 var eye_minion_anim: AnimationPlayer
 @onready var movement_manager: MovementManager = $MovementManager
-var collision_mask:int = pow(2, 12-1)
+
 var full_collision_mask:int = pow(2, 12-1) + pow(2, 13-1) + pow(2, 14-1) + pow(2, 15-1) + pow(2, 16-1)
 
 # Called when the node enters the scene tree for the first time.
