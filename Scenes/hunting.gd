@@ -24,7 +24,7 @@ func Physics_Update(_delta) -> void:
 		is_moving = true
 		movement_manager.MoveToTile(current_path_id)
 		# find current path id in player visited list
-		var index:int = player.visitedTileNormals.find(NormalsDatabase.normals_database[current_path_id])
+		var index:int = FindPositionIndex()
 		var obj_index = FindHighlightIndex()
 		if index == -1 or obj_index == -1:
 			# did not find path
@@ -38,7 +38,7 @@ func Physics_Update(_delta) -> void:
 		player.visitedTileNormals.remove_at(index)
 		player.visitedTilePositions.remove_at(index)
 		# remove object form world
-		player.debugArray.remove_at(index)
+		player.debugArray.pop_at(index).queue_free()
 		
 		# set current path id to next value
 		if tmp_id:
@@ -49,6 +49,15 @@ func Physics_Update(_delta) -> void:
 		# wait for move to finish
 		await get_tree().create_timer(movement_manager.move_time).timeout
 		is_moving = false
+
+func FindPositionIndex() -> int:
+	var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
+	var count:int = 0
+	for pos in player.visitedTilePositions:
+		if position.dot(pos) > 0.99:
+			return count
+		count += 1
+	return -1
 
 func FindHighlightIndex() -> int:
 	var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
