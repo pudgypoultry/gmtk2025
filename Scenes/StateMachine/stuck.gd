@@ -68,7 +68,7 @@ func GetRandomTilePosition() -> Vector3:
 		var result = NormalsDatabase.PhysicsProcessRaycast(
 			Vector3.ZERO, 
 			-NormalsDatabase.normals_database[key]*200, 
-			movement_manager.eye_minion.full_collision_mask)
+			NormalsDatabase.full_collision_mask)
 		if result:
 			return result.position
 	print(counter)

@@ -9,6 +9,7 @@ var active_database:Dictionary[String, bool]
 # Keys are strings - id of tile
 # Values are Vector3 - position of tile center
 @export var radien_step:float = PI / 30
+var full_collision_mask:int = pow(2, 12-1) + pow(2, 13-1) + pow(2, 14-1) + pow(2, 15-1) + pow(2, 16-1)
 
 
 # Called when the node enters the scene tree for the first time.

@@ -218,7 +218,10 @@ func SteppedOnNewTile(tileNormal : Vector3):
 				var newLightUp = tileLightUp.instantiate()
 				get_parent().add_child(newLightUp)
 				# TODO: tilePosition = use find nearest pillar to get the middle point of the tile 
-				newLightUp.position = NormalsDatabase.positions_database[currentKey]
+				var dir:Vector3 = -NormalsDatabase.normals_database[currentKey] * 100
+				newLightUp.position = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, dir, NormalsDatabase.full_collision_mask).position
+				var s:float = 1 / currentLevel
+				newLightUp.scale = Vector3(s, s, s)
 				#newLightUp.rotate_x(deg_to_rad(90))
 				newLightUp.basis = Basis(
 					-self.basis.z.cross(NormalsDatabase.normals_database[currentKey]),

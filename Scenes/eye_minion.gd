@@ -4,8 +4,6 @@ var player:CharacterBody3D
 var eye_minion_anim: AnimationPlayer
 @onready var movement_manager: MovementManager = $MovementManager
 
-var full_collision_mask:int = pow(2, 12-1) + pow(2, 13-1) + pow(2, 14-1) + pow(2, 15-1) + pow(2, 16-1)
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# find the animation player
