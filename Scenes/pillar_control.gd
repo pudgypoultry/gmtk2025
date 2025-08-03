@@ -74,8 +74,8 @@ func FindTargetPillarByLayer(ray:RayCast3D, set_number:int, debug : bool = false
 	return null
 
 
-func ActivatePillar(pillar : Node3D, layer : int) -> void:
-	match layer:
+func ActivatePillar(pillar : Node3D, set_number : int) -> void:
+	match set_number:
 		1:
 			pillar_set_L1.MoveRadially(pillar)
 		2:
@@ -86,8 +86,15 @@ func ActivatePillar(pillar : Node3D, layer : int) -> void:
 			pillar_set_L4.MoveRadially(pillar)
 
 
-func ActivatePillarByNormal(normal : Vector3, layer : int) -> void:
-	player_detection_ray.target_position = -normal*100
-	if FindTargetPillarByLayer(player_detection_ray, layer) != null:
-		var obj = FindTargetPillarByLayer(player_detection_ray, layer, true)
-		ActivatePillar(obj, layer)
+func ActivatePillarByNormal(normal : Vector3, set_number : int) -> void:
+	var pos = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, -normal * 100, pow(2, 12+set_number-1))
+	if pos:
+		#print("Found Pillar: " + result.collider.get_parent().name)
+		# return pillar matching set
+		#pos.collider.get_parent()
+	#if FindTargetPillarByLayer(player_detection_ray, set_number) != null:
+		print("Hello")
+		#var obj = await FindTargetPillarByLayer(player_detection_ray, set_number, true)
+		ActivatePillar(pos.collider.get_parent(), set_number)
+	else:
+		print("Whoopsie")

@@ -14,6 +14,7 @@ func Enter(old_state:State) -> void:
 func Exit(new_state:State) -> void:
 	super(new_state)
 	found_path = false
+	is_moving = false
 	
 func Update(_delta) -> void:
 	super(_delta)
@@ -28,6 +29,7 @@ func Physics_Update(_delta) -> void:
 	super(_delta)
 	if not is_moving:
 		if found_path:
+			print("Passing pathID: " + path_id)
 			hunting.Enter(self)
 		var tile_id:String
 		# find next tile to move to

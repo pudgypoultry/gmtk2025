@@ -122,7 +122,7 @@ func _process(delta: float) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	remainingTime -= delta
 	scoreLabel.text = "SCORE: " + str(playerScore)
-	scoreLabel.text = "TIME LEFT: %.2f" % [remainingTime]
+	timeLabel.text = "TIME LEFT: %.2f" % [remainingTime]
 
 
 func _physics_process(delta: float) -> void:
@@ -197,7 +197,7 @@ func SteppedOnNewTile(tileNormal : Vector3):
 		if currentKey in NormalDatabaseKeys():
 			var newTile = NormalsDatabase.normals_database[currentKey]
 			if newTile in visitedTileNormals and newTile != visitedTileNormals[len(visitedTileNormals)-1] and len(visitedTileNormals) > 2:
-				# CheckForTilesInLoop(newTile)
+				CheckForTilesInLoop(newTile)
 				visitedTileNormals.clear()
 				visitedTilePositions.clear()
 				for i in range(len(debugArray)):
@@ -272,14 +272,25 @@ func CheckForTilesInLoop(repeatedTile):
 	var loopedTiles = []
 	var atLooped = false
 	for tile in visitedTileNormals:
+		print("Looping from tile: " + str(tile))
 		if tile == repeatedTile:
 			atLooped = true
 		if atLooped:
 			loopedTiles.append(tile)
+	var i = 0
 	for tile in loopedTiles:
-		var currentArray = NormalsDatabase.FloodArea(NormalToKey(tile), visitedTileNormals, 12).keys()
-		if len(checkingArrays) > 1:
+		print("STARTING A FLOOD FROM: " + str(tile))
+		var floodIgnoreList = []
+		for loopedTile in loopedTiles:
+			floodIgnoreList.append(NormalToKey(loopedTile))
+		var currentArray = await NormalsDatabase.FloodArea(NormalToKey(tile), floodIgnoreList, 12)
+		currentArray.sort()
+		if len(checkingArrays) > 0 and len(currentArray) < 20:
 			for array in checkingArrays:
+				print("==============")
+				print(array)
+				print(currentArray)
+				print("==============")
 				if currentArray == array:
 					foundInside = true
 					correctArray = currentArray
@@ -289,7 +300,9 @@ func CheckForTilesInLoop(repeatedTile):
 		checkingArrays.append(currentArray)
 	if len(correctArray) > 0:
 		for tile in correctArray:
+			await get_tree().create_timer(0.25).timeout
 			ActivateTile(tile)
+			await get_tree().create_timer(0.25).timeout
 		IncreaseScore(len(correctArray))
 
 
@@ -310,10 +323,20 @@ func ResetScore():
 			#await get_tree().create_timer(0.2).timeout
 
 
-func ActivateTile(tile : Vector3):
-	print("Trying to activate: " + str(NormalToKey(tile)) + " : " + str(NormalsDatabase.normals_database[NormalToKey(tile)]))
-	worldReference.ActivatePillarByNormal(NormalsDatabase.normals_database[NormalToKey(tile)], currentLevel)
-
+func ActivateTile(tile : String):
+	print("Trying to activate: " + tile + " : " + str(NormalsDatabase.normals_database[tile]))
+	worldReference.ActivatePillarByNormal(NormalsDatabase.normals_database[tile], currentLevel)
+	var newLightUp = tileLightUp.instantiate()
+	get_parent().add_child(newLightUp)
+	# TODO: tilePosition = use find nearest pillar to get the middle point of the tile 
+	newLightUp.position = NormalsDatabase.positions_database[tile]
+	#newLightUp.rotate_x(deg_to_rad(90))
+	newLightUp.basis = Basis(
+		-self.basis.z.cross(NormalsDatabase.normals_database[tile]),
+		NormalsDatabase.normals_database[tile], 
+		self.basis.z
+	).orthonormalized()
+	
 
 func get_dir() -> Vector3:
 	var dir : Vector3 = Vector3.ZERO

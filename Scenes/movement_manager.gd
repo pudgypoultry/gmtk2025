@@ -43,9 +43,11 @@ func RotateToFloor(delta:float, rotationSpeed:float=1.0) -> void:
 			var target_up : Vector3 = ray.get_collision_normal()
 			var rightAxis : Vector3 = -backAxis.cross(target_up)
 			var rotationBasis := Basis(rightAxis, target_up, backAxis).orthonormalized()
+			# print(target_up, rightAxis, backAxis)
 			eye_minion.basis = eye_minion.basis.get_rotation_quaternion().slerp(
 				rotationBasis,
 				delta * rotationSpeed)
+			backAxis = eye_minion.basis.z
 			return
 	
 # Casts a ray from the origin to the shell or pillars and 

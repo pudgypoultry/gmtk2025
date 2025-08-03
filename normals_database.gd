@@ -30,6 +30,7 @@ func _ready() -> void:
 		if result:
 			positions_database[key] = result.position
 	print("Added %d position values" % positions_database.size())
+	CreateAdjacencies()
 
 
 func TryAddNormal(ray:Vector3) -> void:
@@ -45,7 +46,8 @@ func TryAddNormal(ray:Vector3) -> void:
 			pass
 		else:
 			normals_database[key] = result.normal
-			
+
+
 func PhysicsProcessRaycast(from:Vector3, to:Vector3, collistion_mask:int) -> Dictionary:
 	# check the physics process directly for the temporary raycast
 	var space_state = get_world_3d().direct_space_state
@@ -59,26 +61,53 @@ func PhysicsProcessRaycast(from:Vector3, to:Vector3, collistion_mask:int) -> Dic
 func NormalToKey(normal:Vector3) -> String:
 	return "%.2f|%.2f|%.2f" % [normal.x, normal.y, normal.z]
 
+
 func PositionToKey(position:Vector3) -> String:
 	for key in positions_database.keys():
 		if (position - positions_database[key]).length() < 0.01:
 			return key
 	return ""
 
-func FloodArea(key : String, visitedList : Array, numSteps : int, trackingDict : Dictionary = {}):
+
+func CreateAdjacencies():
+	for i in range(len(positions_database.keys())):
+		var currentTile = positions_database[positions_database.keys()[i]]
+		var minDistances = [1000, 1001, 1002]
+		var minTiles = ["A", "B", "C"]
+		for j in range(len(positions_database.keys())):
+			if i == j:
+				continue
+			var currentOther = positions_database[positions_database.keys()[j]]
+			if (currentTile - currentOther).length() < minDistances.max():
+				var currentIndex = minDistances.find(minDistances.max())
+				minDistances[currentIndex] = (currentTile - currentOther).length()
+				minTiles[currentIndex] = positions_database.keys()[j]
+		adjacencies_database[positions_database.keys()[i]] = minTiles
+
+
+func FloodArea(key : String, visitedList : Array, numSteps : int, trackingList : Array = []) -> Array:
 	# Terminal Step
-	print("Starting with: " + key)
-	var workingDict = trackingDict
-	if numSteps == 0:
-		print("	Found endpoint: " + key)
-		return {key : 1}
+	# print("Starting with: " + key)
+	var workingList = trackingList
+	var noAdjacencies = true
+	# workingList.append(key)
+	if numSteps == 1:
+		# print("	Found endpoint: " + key)
+		return [key]
 	# Recursive Step
 	else:
 		for tile in adjacencies_database[key]:
-			if tile not in visitedList and tile not in workingDict.keys():
-				workingDict[tile] = 1
-				print("	Searching through: " + tile)
-				var newTiles = FloodArea(tile, visitedList, numSteps - 1, workingDict)
-				for adjacentTile in newTiles.keys():
-					workingDict[adjacentTile] = 1
-	return workingDict
+			if tile not in visitedList and tile not in trackingList:
+				noAdjacencies = false
+				workingList.append(tile)
+				# print("	Searching through: " + tile)
+				var newTiles = FloodArea(tile, visitedList, numSteps - 1, workingList)
+				for adjacentTile in newTiles:
+					workingList.append(adjacentTile)
+	if noAdjacencies:
+		return [key]
+	var finalList = []
+	for item in workingList:
+		if item not in finalList:
+			finalList.append(item)
+	return finalList
