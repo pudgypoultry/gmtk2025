@@ -15,7 +15,7 @@ extends CharacterBody3D
 @export var scorePerTile : int = 100
 @export var scoreLengthMultiplier : float = 1.1
 @export var startingTime : float = 60.0
-@export var winPercentage : float = 0.1
+@export var winPercentage : float = 0.333
 
 
 @export_category("Plugging in Nodes")
@@ -120,6 +120,9 @@ func _process(delta: float) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	if Input.is_action_just_pressed("TestWin"):
+		InitiateWin()
 	remainingTime -= delta
 	scoreLabel.text = "SCORE: " + str(playerScore)
 	timeLabel.text = "TIME LEFT: %.2f" % [remainingTime]
@@ -129,8 +132,9 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if playerWins: 
 		playerWins = false
+		await get_tree().create_timer(2).timeout
 		InitiateWin()
-		
+	
 	rotationCheckTimer += delta
 	if rotationCheckTimer > rotationCheckInterval:
 		rotationCheckTimer = 0
@@ -221,7 +225,7 @@ func SteppedOnNewTile(tileNormal : Vector3):
 					NormalsDatabase.normals_database[currentKey], 
 					self.basis.z
 				).orthonormalized()
-				#newLightUp.position += newLightUp.basis.y
+				newLightUp.position += newLightUp.basis.y
 				debugArray.append(newLightUp)
 				#print(visitedTileNormals)
 			onDifferentTile = true
@@ -249,7 +253,7 @@ func CheckForTilesInLoop(repeatedTile):
 		var floodIgnoreList = []
 		for loopedTile in loopedTiles:
 			floodIgnoreList.append(NormalToKey(loopedTile))
-		var currentArray = await NormalsDatabase.FloodArea(NormalToKey(tile), floodIgnoreList, 12)
+		var currentArray = await NormalsDatabase.FloodArea(NormalToKey(tile), floodIgnoreList, 13)
 		currentArray.sort()
 		if len(checkingArrays) > 0 and len(currentArray) < 20:
 			for array in checkingArrays:
@@ -262,7 +266,7 @@ func CheckForTilesInLoop(repeatedTile):
 		checkingArrays.append(currentArray)
 	if len(correctArray) > 0:
 		for tile in correctArray:
-			await get_tree().create_timer(0.1).timeout
+			await get_tree().create_timer(0.05).timeout
 			ActivateTile(tile)
 		IncreaseScore(len(correctArray))
 		CheckForWinState(winPercentage)
@@ -291,6 +295,8 @@ func InitiateWin():
 	match currentLevel:
 		1:
 			print("FIRST LEVEL COMPLETE")
+			var newPosition = NormalsDatabase.positions_database[NormalToKey(-up_direction)]
+			position = newPosition
 			for key in NormalsDatabase.normals_database.keys():
 				if !NormalsDatabase.active_database[key]:
 					ActivateTile(key, true)
