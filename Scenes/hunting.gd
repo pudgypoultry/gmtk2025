@@ -3,12 +3,16 @@ extends State
 @onready var movement_manager: MovementManager = $"../../MovementManager"
 @export var patrolling: State
 @export var hunting_rays: Node3D
+@export var time_step:float = 0.1
+@export var min_time:float = 0.5
 var current_path_id:String
 var is_moving:bool = false
 var player:CharacterBody3D
+var base_timeout:float
 
 func Enter(old_state:State) -> void:
 	super(old_state)
+	base_timeout = movement_manager.move_time
 	current_path_id = old_state.path_id
 	player = movement_manager.eye_minion.player
 	is_moving = false
@@ -16,6 +20,7 @@ func Enter(old_state:State) -> void:
 func Exit(new_state:State) -> void:
 	super(new_state)
 	is_moving = false
+	movement_manager.move_time = base_timeout
 	
 func Update(_delta) -> void:
 	super(_delta)
@@ -24,6 +29,9 @@ func Physics_Update(_delta) -> void:
 	super(_delta)
 	if not is_moving:
 		is_moving = true
+		movement_manager.move_time -= time_step
+		if movement_manager.move_time < min_time:
+			movement_manager.move_time = min_time
 		movement_manager.MoveToTile(current_path_id)
 		# find current path id in player visited list
 		var index:int = FindPositionIndex()
