@@ -225,7 +225,7 @@ func SteppedOnNewTile(tileNormal : Vector3):
 					NormalsDatabase.normals_database[currentKey], 
 					self.basis.z
 				).orthonormalized()
-				newLightUp.position += newLightUp.basis.y
+				# newLightUp.position += newLightUp.basis.y
 				debugArray.append(newLightUp)
 				#print(visitedTileNormals)
 			onDifferentTile = true
