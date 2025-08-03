@@ -41,7 +41,8 @@ func ClearDatabase():
 	normals_database.clear()
 	positions_database.clear()
 	adjacencies_database.clear()
-	
+	for key in active_database.keys():
+		active_database[key] = false
 
 
 func TryAddNormal(ray:Vector3) -> void:

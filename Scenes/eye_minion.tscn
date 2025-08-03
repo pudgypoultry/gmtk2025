@@ -152,7 +152,7 @@ hunting_rays = NodePath("../../HuntingRays")
 [node name="Stuck" type="Node" parent="StateManager" node_paths=PackedStringArray("patrolling")]
 script = ExtResource("5_bq01v")
 patrolling = NodePath("../Patrolling")
-fly_time = 0.5
+fly_time = 1.5
 
 [node name="Hunting" type="Node" parent="StateManager" node_paths=PackedStringArray("patrolling", "hunting_rays")]
 script = ExtResource("6_yba5y")

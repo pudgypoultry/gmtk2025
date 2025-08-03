@@ -62,22 +62,24 @@ func Physics_Update(_delta) -> void:
 		is_moving = false
 
 func FindPositionIndex() -> int:
-	var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
-	var count:int = 0
-	for pos in player.visitedTilePositions:
-		if (position - pos).length() < 0.01:
-			return count
-		count += 1
+	if current_path_id in NormalsDatabase.positions_database.keys():
+		var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
+		var count:int = 0
+		for pos in player.visitedTilePositions:
+			if (position - pos).length() < 0.01:
+				return count
+			count += 1
 	return -1
 
 func FindHighlightIndex() -> int:
-	var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
-	var count:int = 0
-	for obj in player.debugArray:
-		if (position - obj.position).length() < 0.01:
-			# vectors are the same
-			return count
-		count += 1
+	if current_path_id in NormalsDatabase.positions_database.keys():
+		var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
+		var count:int = 0
+		for obj in player.debugArray:
+			if (position - obj.position).length() < 0.01:
+				# vectors are the same
+				return count
+			count += 1
 	return -1
 
 

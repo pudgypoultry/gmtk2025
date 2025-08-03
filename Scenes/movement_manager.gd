@@ -71,14 +71,15 @@ func RotateToFloor(delta:float, rotationSpeed:float=1.0) -> void:
 # Also tweens the Eye’s rotation so that its current up direction matches the normal of the ray intersection point.
 func MoveToTile(tile_id:String) -> void:
 	ray_counter = 0
-	var tile_normal:Vector3 = NormalsDatabase.normals_database[tile_id]
-	# get target coordinates
-	# NOTE target may not be on the shell, can't use position database
-	var result = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, -tile_normal * 50, NormalsDatabase.full_collision_mask)
-	if result:
-		var target_position:Vector3 = result.position
-		var target_up:Vector3 = result.normal
-		backAxis = (eye_minion.position - target_position).normalized()
-		# tween location
-		TweenTools.TweenPosition(eye_minion, eye_minion, target_position, move_time)
+	if tile_id in NormalsDatabase.normals_database.keys():
+		var tile_normal:Vector3 = NormalsDatabase.normals_database[tile_id]
+		# get target coordinates
+		# NOTE target may not be on the shell, can't use position database
+		var result = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, -tile_normal * 50, NormalsDatabase.full_collision_mask)
+		if result:
+			var target_position:Vector3 = result.position
+			var target_up:Vector3 = result.normal
+			backAxis = (eye_minion.position - target_position).normalized()
+			# tween location
+			TweenTools.TweenPosition(eye_minion, eye_minion, target_position, move_time)
 		

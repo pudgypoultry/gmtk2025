@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://b7yji8n3x4417"]
+[gd_scene load_steps=6 format=3 uid="uid://b7yji8n3x4417"]
 
+[ext_resource type="Texture2D" uid="uid://cr3uq02vocx7t" path="res://Assets/images/BackgroundSmall.png" id="1_ab7fb"]
 [ext_resource type="Script" uid="uid://cudpuqjfk7xkd" path="res://Scenes/Menu/arrow.gd" id="3_7jtkx"]
 [ext_resource type="Script" uid="uid://de3ddj8cwj4by" path="res://Scenes/Menu/SceneButton.gd" id="4_ab7fb"]
 [ext_resource type="Texture2D" uid="uid://7i01sos254te" path="res://Assets/images/Logo.png" id="4_vmek6"]
@@ -15,7 +16,23 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer2"]
+modulate = Color(0.242188, 0.242188, 0.242188, 1)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("1_ab7fb")
+stretch_mode = 1
+
 [node name="Options" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -42,6 +59,7 @@ script = ExtResource("3_7jtkx")
 
 [node name="Text" type="Button" parent="Options/VBoxContainer/Start"]
 layout_mode = 2
+theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 50
 text = "Start"
 flat = true
@@ -61,6 +79,7 @@ script = ExtResource("3_7jtkx")
 
 [node name="Text" type="Button" parent="Options/VBoxContainer/Credits"]
 layout_mode = 2
+theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 50
 text = "Credits"
 flat = true
@@ -80,6 +99,7 @@ script = ExtResource("3_7jtkx")
 
 [node name="Text" type="Button" parent="Options/VBoxContainer/Exit"]
 layout_mode = 2
+theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 50
 text = "Exit"
 flat = true

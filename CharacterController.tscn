@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dd1thh4346sxi"]
+[gd_scene load_steps=9 format=3 uid="uid://dd1thh4346sxi"]
 
 [ext_resource type="Script" uid="uid://7y87kc0aoch8" path="res://Scripts/SpiderController.gd" id="1_wubm4"]
 [ext_resource type="PackedScene" uid="uid://b71qsbqcxxpvy" path="res://Sandboxes/Andrew/SteppedOnTileMesh.tscn" id="2_v6m8r"]
+[ext_resource type="PackedScene" uid="uid://d0s35icbe05hh" path="res://Scenes/eye_minion.tscn" id="3_bouwt"]
+[ext_resource type="Script" uid="uid://dxf34kd066jdy" path="res://end_score.gd" id="4_lhhdn"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_l0jw5"]
 
@@ -16,7 +18,7 @@ top_radius = 0.1
 bottom_radius = 0.3
 height = 0.1
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray", "scoreLabel", "timeLabel", "percentageLabel")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray", "scoreLabel", "timeLabel", "percentageLabel", "requiredLabel", "hud", "lossScreen", "highScore", "winScreen", "winScreenScore")]
 script = ExtResource("1_wubm4")
 speed = 10.0
 runSpeed = 20.0
@@ -26,9 +28,16 @@ camTarget = NodePath("Head/Camera3D/CamTarget")
 rayFolder = NodePath("RayFolder")
 normalCheckray = NodePath("GroundNormalCheck")
 tileLightUp = ExtResource("2_v6m8r")
-scoreLabel = NodePath("Control/MarginContainer/VBoxContainer/Score")
-timeLabel = NodePath("Control/MarginContainer/VBoxContainer/Time")
-percentageLabel = NodePath("Control/MarginContainer/VBoxContainer/Percentage")
+scoreLabel = NodePath("HUD/MarginContainer/VBoxContainer/Score")
+timeLabel = NodePath("HUD/MarginContainer/VBoxContainer/Time")
+percentageLabel = NodePath("HUD/MarginContainer/VBoxContainer/Percentage")
+requiredLabel = NodePath("HUD/MarginContainer/VBoxContainer/Required")
+eyeMinion = ExtResource("3_bouwt")
+hud = NodePath("HUD")
+lossScreen = NodePath("LossScreen")
+highScore = NodePath("LossScreen/MarginContainer/VBoxContainer/EndScore")
+winScreen = NodePath("WinScreen")
+winScreenScore = NodePath("WinScreen/MarginContainer/VBoxContainer/EndScore")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_l0jw5")
@@ -746,7 +755,7 @@ transform = Transform3D(-2.98023e-08, 0, 1, -0.258819, 0.965926, -1.34513e-08, -
 target_position = Vector3(1, 0, 0)
 hit_back_faces = false
 
-[node name="Control" type="Control" parent="."]
+[node name="HUD" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -754,27 +763,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Control"]
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 1
 offset_right = 56.0
 offset_bottom = 40.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Time" type="Label" parent="Control/MarginContainer/VBoxContainer"]
+[node name="Time" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "TIME:"
 
-[node name="Score" type="Label" parent="Control/MarginContainer/VBoxContainer"]
+[node name="Score" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "SCORE:"
 
-[node name="Percentage" type="Label" parent="Control/MarginContainer/VBoxContainer"]
+[node name="Percentage" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "SCORE:"
+
+[node name="Required" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "SCORE:"
@@ -783,3 +797,91 @@ text = "SCORE:"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.72974, 0)
 collision_mask = 2049
 hit_back_faces = false
+
+[node name="LossScreen" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="LossScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LossScreen/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="GameOver" type="Label" parent="LossScreen/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "GET PANOPTICON'D"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndScore" type="Label" parent="LossScreen/MarginContainer/VBoxContainer" node_paths=PackedStringArray("scoreLabel")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "FINAL SCORE: "
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_lhhdn")
+scoreLabel = NodePath("../../../../HUD/MarginContainer/VBoxContainer/Score")
+
+[node name="Restart" type="Label" parent="LossScreen/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "\"R\" to Restart"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WinScreen" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="WinScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WinScreen/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="GameOver" type="Label" parent="WinScreen/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "YOU WIN"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndScore" type="Label" parent="WinScreen/MarginContainer/VBoxContainer" node_paths=PackedStringArray("scoreLabel")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "FINAL SCORE: "
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_lhhdn")
+scoreLabel = NodePath("../../../../HUD/MarginContainer/VBoxContainer/Score")
+
+[node name="Restart" type="Label" parent="WinScreen/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "\"R\" to Restart"
+horizontal_alignment = 1
+vertical_alignment = 1

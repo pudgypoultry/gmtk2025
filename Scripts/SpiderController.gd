@@ -5,17 +5,17 @@ extends CharacterBody3D
 @export var verticalCameraClamp : float = 75
 @export var speed : float = 5
 @export var runSpeed : float = 10
-@export var maxTileLineLength : int = 10
+@export var maxTileLineLength : int = 25
 @export var tileCheckTolerance : float = 0.05
 @export var rotationCheckTolerance : float = 0.05
 @export var rotationCheckInterval : float = 0.01
 @export var dotDifferenceTolerance : float = 0.02
 @export var cooldownAmount : float = 0.5
 @export var planeIntersectionTolerance : float = 0.01
-@export var scorePerTile : int = 100
+@export var scorePerTile : int = 10
 @export var scoreLengthMultiplier : float = 1.1
-@export var startingTime : float = 60.0
-@export var winPercentage : float = 0.333
+@export var startingTime : float = 250.0
+@export var winPercentage : float = 0.33
 
 
 @export_category("Plugging in Nodes")
@@ -28,6 +28,13 @@ extends CharacterBody3D
 @export var scoreLabel : Label
 @export var timeLabel : Label
 @export var percentageLabel : Label
+@export var requiredLabel : Label
+@export var eyeMinion : PackedScene
+@export var hud : Control
+@export var lossScreen : Control
+@export var highScore : Label
+@export var winScreen : Control
+@export var winScreenScore : Control
 var debugArray = []
 
 var worldReference
@@ -52,6 +59,8 @@ var onDifferentTile : bool = true
 var isRotating : bool = false
 var isOnCooldown : bool = false
 var playerWins : bool = false
+var playerLoses : bool = false
+var pauseTimer : bool = false
 var cooldownTimer : float = 0.0
 var currentLevel : int = 1
 var lastTileNormal : Vector3 = Vector3.UP
@@ -69,7 +78,17 @@ func _ready() -> void:
 	velocity = Vector3.ZERO
 	baseSpeed = speed
 	remainingTime = startingTime
+	await get_tree().create_timer(2).timeout
+	SummonEye()
+	await get_tree().create_timer(5).timeout
+	SummonEye()
 
+
+func SummonEye():
+	var currentMinion = eyeMinion.instantiate()
+	get_parent().add_child(currentMinion)
+	currentMinion.position = Vector3.ZERO
+	currentMinion.player = self
 
 func bodyEntered(body) -> void:
 	if body and body != bodyOn and body is StaticBody3D:
@@ -110,12 +129,13 @@ func checkRays() -> void:
 
 
 func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("Reset"):
+	if Input.is_action_just_pressed("Reset") and !canAct:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		get_tree().reload_current_scene()
-	if Input.is_action_pressed("Run"):
-		speed = runSpeed
-	else:
-		speed = baseSpeed
+	#if Input.is_action_pressed("Run"):
+		#speed = runSpeed
+	#else:
+		#speed = baseSpeed
 	if Input.is_key_pressed(KEY_ESCAPE):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
@@ -123,10 +143,16 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("TestWin"):
 		InitiateWin()
-	remainingTime -= delta
+	if !pauseTimer:
+		remainingTime -= delta
+		if remainingTime <= 0:
+			pauseTimer = true
+			canAct = false
+			PlayerLoses()
 	scoreLabel.text = "SCORE: " + str(playerScore)
 	timeLabel.text = "TIME LEFT: %.2f" % [remainingTime]
 	percentageLabel.text = "PERCENTAGE COVERED: %.2f" % [float(currentActive) / float(len(NormalsDatabase.active_database.keys()))]
+	requiredLabel.text = "PERCENTAGE NEEDED: %.2f" % [winPercentage]
 
 
 func _physics_process(delta: float) -> void:
@@ -220,7 +246,9 @@ func SteppedOnNewTile(tileNormal : Vector3):
 				# TODO: tilePosition = use find nearest pillar to get the middle point of the tile 
 				var dir:Vector3 = -NormalsDatabase.normals_database[currentKey] * 100
 				newLightUp.position = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, dir, NormalsDatabase.full_collision_mask).position
-				var s:float = 1 / currentLevel
+				var s : float = 1
+				if currentLevel != 0:
+					s= 1.0 / float(currentLevel)
 				newLightUp.scale = Vector3(s, s, s)
 				#newLightUp.rotate_x(deg_to_rad(90))
 				newLightUp.basis = Basis(
@@ -230,6 +258,9 @@ func SteppedOnNewTile(tileNormal : Vector3):
 				).orthonormalized()
 				# newLightUp.position += newLightUp.basis.y
 				debugArray.append(newLightUp)
+				if len(debugArray) > maxTileLineLength:
+					var toDelete = debugArray.pop_front()
+					toDelete.queue_free()
 				#print(visitedTileNormals)
 			onDifferentTile = true
 			lastTileNormal = newTile
@@ -298,31 +329,57 @@ func InitiateWin():
 	match currentLevel:
 		1:
 			print("FIRST LEVEL COMPLETE")
-			var newPosition = NormalsDatabase.positions_database[NormalToKey(-up_direction)]
+			var newPosition = NormalsDatabase.positions_database[NormalToKey(up_direction)]
 			position = newPosition
 			for key in NormalsDatabase.normals_database.keys():
 				if !NormalsDatabase.active_database[key]:
 					ActivateTile(key, true)
+			pauseTimer = true
 			await get_tree().create_timer(worldReference.pillar_set_L1.animation_length).timeout
 			currentLevel += 1
 			NormalsDatabase.ClearDatabase()
 			NormalsDatabase.GameSetup()
+			pauseTimer = false
+			playerScore += ceil(10 * remainingTime)
+			remainingTime = 200
+			canAct = true
 		2:
 			print("SECOND LEVEL COMPLETE")
 			for key in NormalsDatabase.normals_database.keys():
 				if !NormalsDatabase.active_database[key]:
 					ActivateTile(key, true)
+			pauseTimer = true
 			await get_tree().create_timer(worldReference.pillar_set_L2.animation_length).timeout
 			currentLevel += 1
 			NormalsDatabase.ClearDatabase()
 			NormalsDatabase.GameSetup()
+			remainingTime = 150
+			pauseTimer = false
+			canAct = true
 		3:
 			print("THIRD LEVEL COMPLETE")
+			playerScore += 10000
+			winScreen.visible = true
+			await get_tree().create_timer(0.1).timeout
+			winScreenScore.SetScore()
+			hud.visible = false
 			ResetBoard()
-			await get_tree().create_timer(worldReference.pillar_set_L1.animation_length + worldReference.pillar_set_L2.animation_length + worldReference.pillar_set_L3.animation_length).timeout
-			NormalsDatabase.ClearDatabase()
-			NormalsDatabase.GameSetup()
-	canAct = true
+			pauseTimer = true
+			#await get_tree().create_timer(worldReference.pillar_set_L1.animation_length + worldReference.pillar_set_L2.animation_length + worldReference.pillar_set_L3.animation_length).timeout
+			#NormalsDatabase.ClearDatabase()
+			#NormalsDatabase.GameSetup()
+			#remainingTime = 180
+			#winPercentage += 0.07
+			#pauseTimer = false
+			#await get_tree().create_timer(0.5).timeout
+			#SummonEye()
+
+
+
+func PlayerLoses():
+	lossScreen.visible = true
+	highScore.SetScore()
+	hud.visible = false
 
 
 func ResetBoard():
@@ -330,6 +387,8 @@ func ResetBoard():
 	#for key in NormalsDatabase.active_database.keys():
 		#ActivateTile(key, true)
 	#await get_tree().create_timer(worldReference.pillar_set_L3.animation_length).timeout
+	for i in len(debugArray):
+		debugArray.pop_front().queue_free()
 	print("Activating level: " + str(currentLevel))
 	for key in NormalsDatabase.active_database.keys():
 		if NormalsDatabase.active_database[key]:
@@ -346,8 +405,8 @@ func ResetBoard():
 		ActivateTile(key, true)
 	await get_tree().create_timer(worldReference.pillar_set_L1.animation_length).timeout
 	currentLevel -= 1
-	#NormalsDatabase.ClearDatabase()
-	#NormalsDatabase.GameSetup()
+	NormalsDatabase.ClearDatabase()
+	NormalsDatabase.GameSetup()
 
 
 func ActivateTile(tile : String, end : bool = false):
