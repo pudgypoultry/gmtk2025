@@ -9,6 +9,7 @@ var full_collision_mask:int = pow(2, 12-1) + pow(2, 13-1) + pow(2, 14-1) + pow(2
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# find the animation player
+	player = $"../Player"
 	for child in eye_minion_mesh.get_children():
 		if is_instance_of(child, AnimationPlayer):
 			eye_minion_anim = child

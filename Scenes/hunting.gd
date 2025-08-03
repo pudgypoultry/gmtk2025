@@ -38,7 +38,8 @@ func Physics_Update(_delta) -> void:
 		player.visitedTileNormals.remove_at(index)
 		player.visitedTilePositions.remove_at(index)
 		# remove object form world
-		player.debugArray.pop_at(index).queue_free()
+		DeleteVisual(index)
+		# player.debugArray.pop_at(index).queue_free()
 		
 		# set current path id to next value
 		if tmp_id:
@@ -68,3 +69,8 @@ func FindHighlightIndex() -> int:
 			return count
 		count += 1
 	return -1
+
+
+func DeleteVisual(index):
+	await get_tree().create_timer(1).timeout
+	player.debugArray.pop_at(index).queue_free()

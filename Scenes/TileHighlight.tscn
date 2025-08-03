@@ -8,7 +8,7 @@ emission = Color(0.718513, 0, 0.726563, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_yukfc"]
 material = SubResource("StandardMaterial3D_y75rj")
-radius = 2.0
+radius = 3.0
 height = 0.1
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_earnb"]

@@ -15,6 +15,7 @@ extends CharacterBody3D
 @export var scorePerTile : int = 100
 @export var scoreLengthMultiplier : float = 1.1
 @export var startingTime : float = 60.0
+@export var winPercentage : float = 0.65
 
 
 @export_category("Plugging in Nodes")
@@ -49,16 +50,18 @@ var checkingForNewTile : bool = false
 var onDifferentTile : bool = true
 var isRotating : bool = false
 var isOnCooldown : bool = false
+var playerWins : bool = false
 var cooldownTimer : float = 0.0
 var currentLevel : int = 1
 var lastTileNormal : Vector3 = Vector3.UP
 var playerScore : int = 0
 var remainingTime
+var canAct = true
 
 
 func _ready() -> void:
 	NormalsDatabase.normals_database.clear()
-	NormalsDatabase._ready()
+	NormalsDatabase.GameSetup()
 	worldReference = get_parent()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	velocity = Vector3.ZERO
@@ -76,7 +79,6 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		camera.rotation.x += -event.relative.y * MOUSE_SENS 
 		camera.rotation.x = clampf(camera.rotation.x, -deg_to_rad(verticalCameraClamp), deg_to_rad(verticalCameraClamp))
-		# rotation.y += -event.relative.x * MOUSE_SENS * mouseSensMulti
 		transform.basis = transform.basis.rotated(up_direction, -event.relative.x * MOUSE_SENS * mouseSensMulti)
 	if abs(camera.rotation_degrees.x) >= 360:
 		camera.rotation_degrees.x = 0
@@ -103,11 +105,7 @@ func checkRays() -> void:
 		avgNormal = avgNor.normalized()
 		jumpVec = avgNormal * 50
 		gravity = avgNormal * -3
-		# print(avgNormal)
-	#else: # come back and showcase this
-		#avgNormal = Vector3.UP
-		#jumpVec = avgNormal * 50
-		#gravity = avgNormal * -3
+
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("Reset"):
@@ -126,6 +124,8 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if playerWins: 
+		playerWins = false
 	rotationCheckTimer += delta
 	if rotationCheckTimer > rotationCheckInterval:
 		rotationCheckTimer = 0
@@ -224,43 +224,6 @@ func SteppedOnNewTile(tileNormal : Vector3):
 
 
 
-#func CheckForTileLoop(repeatedTile):
-	#isOnCooldown = true
-	## Make sure there are at least 3 tiles, otherwise it's just doubling back and you know whatever
-	## Get average normal 
-	#print("Starting tile loop check")
-	#var loopedTiles = []
-	#var atLooped = false
-	#for tile in visitedTileNormals:
-		#if tile == repeatedTile:
-			#atLooped = true
-		#if atLooped:
-			#loopedTiles.append(tile)
-	#var average = Vector3.ZERO
-	#var numNormals = 0
-	#for norm in loopedTiles:
-		#numNormals += 1
-		#average += norm
-	#if average:
-		#average /= numNormals
-		#average = average.normalized()
-#
-	## If any tile in the dict *and* that isn't in visitedTileNormals has a closer dot product to the avg normal than
-	## any tile in visitedTileNormals, we know it's been looped
-	#var minDotProductDifference = 1
-	#for tile in loopedTiles:
-		#var currentDot = average.dot(tile)
-		#if 1 - currentDot < minDotProductDifference:
-			#minDotProductDifference = 1 - currentDot
-	#print("Minimum diff: " + str(minDotProductDifference))
-	#ActivateTiles(average, minDotProductDifference)
-	#visitedTileNormals.clear()
-	#visitedTilePositions.clear()
-	#for i in range(len(debugArray)):
-		#debugArray.pop_front().queue_free()
-		## await get_tree().create_timer(0.2).timeout
-
-
 func CheckForTilesInLoop(repeatedTile):
 	isOnCooldown = true
 	var checkingArrays = []
@@ -268,18 +231,16 @@ func CheckForTilesInLoop(repeatedTile):
 	var foundInside = false
 	# Make sure there are at least 3 tiles, otherwise it's just doubling back and you know whatever
 	# Get average normal 
-	print("Starting tile loop check")
+	# print("Starting tile loop check")
 	var loopedTiles = []
 	var atLooped = false
 	for tile in visitedTileNormals:
-		print("Looping from tile: " + str(tile))
 		if tile == repeatedTile:
 			atLooped = true
 		if atLooped:
 			loopedTiles.append(tile)
 	var i = 0
 	for tile in loopedTiles:
-		print("STARTING A FLOOD FROM: " + str(tile))
 		var floodIgnoreList = []
 		for loopedTile in loopedTiles:
 			floodIgnoreList.append(NormalToKey(loopedTile))
@@ -287,10 +248,6 @@ func CheckForTilesInLoop(repeatedTile):
 		currentArray.sort()
 		if len(checkingArrays) > 0 and len(currentArray) < 20:
 			for array in checkingArrays:
-				print("==============")
-				print(array)
-				print(currentArray)
-				print("==============")
 				if currentArray == array:
 					foundInside = true
 					correctArray = currentArray
@@ -300,10 +257,10 @@ func CheckForTilesInLoop(repeatedTile):
 		checkingArrays.append(currentArray)
 	if len(correctArray) > 0:
 		for tile in correctArray:
-			await get_tree().create_timer(0.25).timeout
+			await get_tree().create_timer(0.1).timeout
 			ActivateTile(tile)
-			await get_tree().create_timer(0.25).timeout
 		IncreaseScore(len(correctArray))
+		CheckForWinState(winPercentage)
 
 
 func IncreaseScore(numTiles):
@@ -313,30 +270,22 @@ func IncreaseScore(numTiles):
 func ResetScore():
 	playerScore = 0
 
-#func ActivateTiles(average : Vector3, minDotProductDifference : float):
-	#for tile in NormalsDatabase.normals_database.values():
-		#var currentDot = average.dot(tile)
-		## print("Current diff: " + str(1 - currentDot))
-		##if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals and 1 - currentDot < dotDifferenceTolerance:
-		#if 1 - currentDot < minDotProductDifference and 1 - currentDot <= 1 and tile not in visitedTileNormals:
-			#ActivateTile(tile)
-			#await get_tree().create_timer(0.2).timeout
+
+func CheckForWinState(percentNeeded):
+	var numActive : float = 0
+	for key in NormalsDatabase.active_database.keys():
+		if NormalsDatabase.active_database[key]:
+			numActive += 1
+	if numActive / float(len(NormalsDatabase.active_database.keys())) > percentNeeded:
+		playerWins = true
 
 
 func ActivateTile(tile : String):
-	print("Trying to activate: " + tile + " : " + str(NormalsDatabase.normals_database[tile]))
-	worldReference.ActivatePillarByNormal(NormalsDatabase.normals_database[tile], currentLevel)
-	var newLightUp = tileLightUp.instantiate()
-	get_parent().add_child(newLightUp)
-	# TODO: tilePosition = use find nearest pillar to get the middle point of the tile 
-	newLightUp.position = NormalsDatabase.positions_database[tile]
-	#newLightUp.rotate_x(deg_to_rad(90))
-	newLightUp.basis = Basis(
-		-self.basis.z.cross(NormalsDatabase.normals_database[tile]),
-		NormalsDatabase.normals_database[tile], 
-		self.basis.z
-	).orthonormalized()
-	
+	if !NormalsDatabase.active_database[tile]:
+		# print("Trying to activate: " + tile + " : " + str(NormalsDatabase.normals_database[tile]))
+		worldReference.ActivatePillarByNormal(NormalsDatabase.normals_database[tile], currentLevel)
+		NormalsDatabase.active_database[tile] = !NormalsDatabase.active_database[tile]
+
 
 func get_dir() -> Vector3:
 	var dir : Vector3 = Vector3.ZERO
@@ -365,6 +314,4 @@ func OrientCharacterToDirection(direction : Vector3, delta : float):
 		var rightAxis := -backAxis.cross(direction)
 		
 		var rotationBasis := Basis(rightAxis, direction, backAxis).orthonormalized()
-		#print("Original Basis:")
-		#print(basis)
 		basis = basis.get_rotation_quaternion().slerp(rotationBasis, delta * rotationSpeed)

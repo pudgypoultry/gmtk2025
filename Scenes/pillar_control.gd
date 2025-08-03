@@ -89,12 +89,4 @@ func ActivatePillar(pillar : Node3D, set_number : int) -> void:
 func ActivatePillarByNormal(normal : Vector3, set_number : int) -> void:
 	var pos = NormalsDatabase.PhysicsProcessRaycast(Vector3.ZERO, -normal * 100, pow(2, 12+set_number-1))
 	if pos:
-		#print("Found Pillar: " + result.collider.get_parent().name)
-		# return pillar matching set
-		#pos.collider.get_parent()
-	#if FindTargetPillarByLayer(player_detection_ray, set_number) != null:
-		print("Hello")
-		#var obj = await FindTargetPillarByLayer(player_detection_ray, set_number, true)
 		ActivatePillar(pos.collider.get_parent(), set_number)
-	else:
-		print("Whoopsie")

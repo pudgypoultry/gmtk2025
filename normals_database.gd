@@ -5,13 +5,14 @@ var normals_database:Dictionary[String, Vector3]
 # Values are Vector3 - normal of tile
 var positions_database:Dictionary[String, Vector3]
 var adjacencies_database:Dictionary
+var active_database:Dictionary[String, bool]
 # Keys are strings - id of tile
 # Values are Vector3 - position of tile center
 @export var radien_step:float = PI / 30
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func GameSetup() -> void:
 	var pi_over_2:float = PI / 2
 	var phi:float = -PI
 	while phi < PI:
@@ -29,8 +30,17 @@ func _ready() -> void:
 		var result = PhysicsProcessRaycast(Vector3.ZERO, -normals_database[key]*200, pow(2, 12-1))
 		if result:
 			positions_database[key] = result.position
+		active_database[key] = false
 	print("Added %d position values" % positions_database.size())
 	CreateAdjacencies()
+	
+
+
+func ClearDatabase():
+	normals_database.clear()
+	positions_database.clear()
+	adjacencies_database.clear()
+	
 
 
 func TryAddNormal(ray:Vector3) -> void:
