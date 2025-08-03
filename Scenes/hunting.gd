@@ -74,5 +74,7 @@ func FindHighlightIndex() -> int:
 
 
 func DeleteVisual(index):
+	var tileToClear = player.debugArray.pop_at(index)
 	await get_tree().create_timer(1).timeout
-	player.debugArray.pop_at(index).queue_free()
+	if tileToClear:
+		tileToClear.queue_free()

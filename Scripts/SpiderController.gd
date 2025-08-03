@@ -15,7 +15,7 @@ extends CharacterBody3D
 @export var scorePerTile : int = 100
 @export var scoreLengthMultiplier : float = 1.1
 @export var startingTime : float = 60.0
-@export var winPercentage : float = 0.65
+@export var winPercentage : float = 0.1
 
 
 @export_category("Plugging in Nodes")
@@ -27,6 +27,7 @@ extends CharacterBody3D
 @export var tileLightUp : PackedScene
 @export var scoreLabel : Label
 @export var timeLabel : Label
+@export var percentageLabel : Label
 var debugArray = []
 
 var worldReference
@@ -57,6 +58,7 @@ var lastTileNormal : Vector3 = Vector3.UP
 var playerScore : int = 0
 var remainingTime
 var canAct = true
+var currentActive = 0
 
 
 func _ready() -> void:
@@ -121,11 +123,14 @@ func _process(delta: float) -> void:
 	remainingTime -= delta
 	scoreLabel.text = "SCORE: " + str(playerScore)
 	timeLabel.text = "TIME LEFT: %.2f" % [remainingTime]
+	percentageLabel.text = "PERCENTAGE COVERED: %.2f" % [float(currentActive) / float(len(NormalsDatabase.active_database.keys()))]
 
 
 func _physics_process(delta: float) -> void:
 	if playerWins: 
 		playerWins = false
+		InitiateWin()
+		
 	rotationCheckTimer += delta
 	if rotationCheckTimer > rotationCheckInterval:
 		rotationCheckTimer = 0
@@ -264,7 +269,7 @@ func CheckForTilesInLoop(repeatedTile):
 
 
 func IncreaseScore(numTiles):
-	playerScore += ceil((scorePerTile * numTiles) * pow(scoreLengthMultiplier, numTiles))
+	playerScore += ceil((scorePerTile * numTiles) * pow(scoreLengthMultiplier + float(currentLevel)/10, numTiles))
 
 
 func ResetScore():
@@ -280,11 +285,73 @@ func CheckForWinState(percentNeeded):
 		playerWins = true
 
 
-func ActivateTile(tile : String):
-	if !NormalsDatabase.active_database[tile]:
-		# print("Trying to activate: " + tile + " : " + str(NormalsDatabase.normals_database[tile]))
+func InitiateWin():
+	canAct = false
+	print("Current Level: " + str(currentLevel))
+	match currentLevel:
+		1:
+			print("FIRST LEVEL COMPLETE")
+			for key in NormalsDatabase.normals_database.keys():
+				if !NormalsDatabase.active_database[key]:
+					ActivateTile(key, true)
+			await get_tree().create_timer(worldReference.pillar_set_L1.animation_length).timeout
+			currentLevel += 1
+			NormalsDatabase.ClearDatabase()
+			NormalsDatabase.GameSetup()
+		2:
+			print("SECOND LEVEL COMPLETE")
+			for key in NormalsDatabase.normals_database.keys():
+				if !NormalsDatabase.active_database[key]:
+					ActivateTile(key, true)
+			await get_tree().create_timer(worldReference.pillar_set_L2.animation_length).timeout
+			currentLevel += 1
+			NormalsDatabase.ClearDatabase()
+			NormalsDatabase.GameSetup()
+		3:
+			print("THIRD LEVEL COMPLETE")
+			ResetBoard()
+			await get_tree().create_timer(worldReference.pillar_set_L1.animation_length + worldReference.pillar_set_L2.animation_length + worldReference.pillar_set_L3.animation_length).timeout
+			NormalsDatabase.ClearDatabase()
+			NormalsDatabase.GameSetup()
+	canAct = true
+
+
+func ResetBoard():
+	#print("Activating level: " + str(currentLevel))
+	#for key in NormalsDatabase.active_database.keys():
+		#ActivateTile(key, true)
+	#await get_tree().create_timer(worldReference.pillar_set_L3.animation_length).timeout
+	print("Activating level: " + str(currentLevel))
+	for key in NormalsDatabase.active_database.keys():
+		if NormalsDatabase.active_database[key]:
+			ActivateTile(key, true)
+	print("Activating level: " + str(currentLevel))
+	await get_tree().create_timer(worldReference.pillar_set_L3.animation_length).timeout
+	currentLevel -= 1
+	for key in NormalsDatabase.active_database.keys():
+		ActivateTile(key, true)
+	await get_tree().create_timer(worldReference.pillar_set_L2.animation_length).timeout
+	currentLevel -= 1
+	print("Activating level: " + str(currentLevel))
+	for key in NormalsDatabase.active_database.keys():
+		ActivateTile(key, true)
+	await get_tree().create_timer(worldReference.pillar_set_L1.animation_length).timeout
+	currentLevel -= 1
+	#NormalsDatabase.ClearDatabase()
+	#NormalsDatabase.GameSetup()
+
+
+func ActivateTile(tile : String, end : bool = false):
+	if !end:
+		if !NormalsDatabase.active_database[tile]:
+			# print("Trying to activate: " + tile + " : " + str(NormalsDatabase.normals_database[tile]))
+			currentActive += 1
+			worldReference.ActivatePillarByNormal(NormalsDatabase.normals_database[tile], currentLevel)
+			NormalsDatabase.active_database[tile] = !NormalsDatabase.active_database[tile]
+	else:
 		worldReference.ActivatePillarByNormal(NormalsDatabase.normals_database[tile], currentLevel)
-		NormalsDatabase.active_database[tile] = !NormalsDatabase.active_database[tile]
+		NormalsDatabase.active_database[tile] = false
+		currentActive = 0
 
 
 func get_dir() -> Vector3:
@@ -296,15 +363,15 @@ func get_dir() -> Vector3:
 
 	var rawInput = Vector2(inputLeftRight, -inputForwardBack)
 	var input = Vector3(rawInput.x, 0, rawInput.y)
-	
-	if Input.is_action_pressed("MoveForward"):
-		dir += dirBase.rotated( avgNormal.normalized(), -PI/2 )
-	if Input.is_action_pressed("MoveBackward"):
-		dir += dirBase.rotated( avgNormal.normalized(), PI/2 )
-	if Input.is_action_pressed("MoveLeft"):
-		dir += dirBase
-	if Input.is_action_pressed("MoveRight"):
-		dir += dirBase.rotated(avgNormal.normalized(), PI)
+	if canAct:
+		if Input.is_action_pressed("MoveForward"):
+			dir += dirBase.rotated( avgNormal.normalized(), -PI/2 )
+		if Input.is_action_pressed("MoveBackward"):
+			dir += dirBase.rotated( avgNormal.normalized(), PI/2 )
+		if Input.is_action_pressed("MoveLeft"):
+			dir += dirBase
+		if Input.is_action_pressed("MoveRight"):
+			dir += dirBase.rotated(avgNormal.normalized(), PI)
 	return dir.normalized()
 
 

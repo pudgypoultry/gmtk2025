@@ -16,7 +16,7 @@ top_radius = 0.1
 bottom_radius = 0.3
 height = 0.1
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray", "scoreLabel", "timeLabel")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camTarget", "rayFolder", "normalCheckray", "scoreLabel", "timeLabel", "percentageLabel")]
 script = ExtResource("1_wubm4")
 speed = 10.0
 runSpeed = 20.0
@@ -28,6 +28,7 @@ normalCheckray = NodePath("GroundNormalCheck")
 tileLightUp = ExtResource("2_v6m8r")
 scoreLabel = NodePath("Control/MarginContainer/VBoxContainer/Score")
 timeLabel = NodePath("Control/MarginContainer/VBoxContainer/Time")
+percentageLabel = NodePath("Control/MarginContainer/VBoxContainer/Percentage")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_l0jw5")
@@ -769,6 +770,11 @@ size_flags_horizontal = 4
 text = "TIME:"
 
 [node name="Score" type="Label" parent="Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "SCORE:"
+
+[node name="Percentage" type="Label" parent="Control/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "SCORE:"

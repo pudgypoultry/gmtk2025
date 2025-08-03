@@ -4,7 +4,7 @@ extends Node3D
 @export var pillar_set_L1:IcoPillarMover
 @export var pillar_set_L2:IcoPillarMover
 @export var pillar_set_L3:IcoPillarMover
-@export var pillar_set_L4:IcoPillarMover
+# @export var pillar_set_L4:IcoPillarMover
 @export var shell_node:Node3D
 @export var shell_detection_ray:RayCast3D
 @export var player_detection_ray:RayCast3D
@@ -30,12 +30,12 @@ func _input(event) -> void:
 		#var obj:Node3D = FindNearestPillar(pillar_set_L3)
 		if obj:
 			pillar_set_L3.MoveRadially(obj)
-	elif event.is_action_pressed("Toggle Pillar L4"):
-		#var obj:Node3D = await FindTargetPillar(shell_detection_ray, 4)
-		var obj:Node3D = await FindTargetPillarByLayer(shell_detection_ray, 4)
-		#var obj:Node3D = FindNearestPillar(pillar_set_L4)
-		if obj:
-			pillar_set_L4.MoveRadially(obj)
+	#elif event.is_action_pressed("Toggle Pillar L4"):
+		##var obj:Node3D = await FindTargetPillar(shell_detection_ray, 4)
+		#var obj:Node3D = await FindTargetPillarByLayer(shell_detection_ray, 4)
+		##var obj:Node3D = FindNearestPillar(pillar_set_L4)
+		#if obj:
+			#pillar_set_L4.MoveRadially(obj)
 
 
 func FindNearestPillar(pillar_set) -> Node3D:
@@ -82,8 +82,8 @@ func ActivatePillar(pillar : Node3D, set_number : int) -> void:
 			pillar_set_L2.MoveRadially(pillar)
 		3:
 			pillar_set_L3.MoveRadially(pillar)
-		4:
-			pillar_set_L4.MoveRadially(pillar)
+		#4:
+			#pillar_set_L4.MoveRadially(pillar)
 
 
 func ActivatePillarByNormal(normal : Vector3, set_number : int) -> void:
