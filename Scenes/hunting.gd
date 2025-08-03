@@ -32,7 +32,7 @@ func Physics_Update(_delta) -> void:
 			return
 			
 		var tmp_id:String
-		if not index + 1 > player.visitedTileNormals.size():
+		if not index + 1 >= player.visitedTileNormals.size():
 			tmp_id = NormalsDatabase.NormalToKey(player.visitedTileNormals[index + 1])
 		# remove it from list
 		player.visitedTileNormals.remove_at(index)
@@ -54,7 +54,7 @@ func FindPositionIndex() -> int:
 	var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
 	var count:int = 0
 	for pos in player.visitedTilePositions:
-		if position.dot(pos) > 0.99:
+		if (position - pos).length() < 0.01:
 			return count
 		count += 1
 	return -1
@@ -63,7 +63,7 @@ func FindHighlightIndex() -> int:
 	var position:Vector3 = NormalsDatabase.positions_database[current_path_id]
 	var count:int = 0
 	for obj in player.debugArray:
-		if position.dot(obj.position) > 0.99:
+		if (position - obj.position).length() < 0.01:
 			# vectors are the same
 			return count
 		count += 1

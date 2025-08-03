@@ -61,7 +61,7 @@ func NormalToKey(normal:Vector3) -> String:
 
 func PositionToKey(position:Vector3) -> String:
 	for key in positions_database.keys():
-		if position.dot(positions_database[key]) > 0.99:
+		if (position - positions_database[key]).length() < 0.01:
 			return key
 	return ""
 
